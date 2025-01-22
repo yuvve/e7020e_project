@@ -10,20 +10,20 @@
 
 ## Hardware Features
 
-- <Display given by Lab>
-- <Humidifier>
+- Display given by Lab
+- Humidifier
 - <battery backup for RTC, and alarm time>
-- <power over usb (micro or something else)>
-- <Tempature and humidity sensor>
-- <inbedded Speaker, should be able to play music>
-- <Rotary encoder, button>
-- <Haptic Acuator>
-- <Added Fan>
+- power over usb (micro or something else)
+- Tempature and humidity sensor
+- inbedded Speaker, should be able to play music
+- Rotary encoder, button
+- Haptic Acuator
+- Added Fan
 
 and mandatory components for:
 
 - Analog sensing <Tempature, humidity sensor>
-- Serial communication interface to host, <over dev-kit VCP>
+- Serial communication interface to host, over dev-kit VCP
 - LED
 - Buzzer
 
@@ -31,11 +31,8 @@ and mandatory components for:
 
 Besides mandatory functionality the Final Countdown features:
 
-<e.g.>
-
-- Automatic RTC update by UTC network time and Time Zone alignment
-- Alarm off functionality requiring the user to guess a random number between 0 and 20 using 3 attempts at most. Feedback given as "too low", "too high" or "you got it!" which turns off the alarm. Fail creates a new random number for the user to guess until correct number is guessed.
-- Ability to read and set a new alarm from device using the (4) navigation buttons.
+- Set Clock and Alarm with rotary button, alternatively added button on device
+- CLI being able to control temprature screen, humudity, speaker volume, intensity of buzzer, and fan speed control from CLI
 
 ## Individual grading goals and contributions
 
