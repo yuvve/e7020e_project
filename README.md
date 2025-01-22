@@ -1,12 +1,12 @@
-# e7020e Project Name: sea breeze clock
+# Sea Breeze Clock
 
 <short selling description, e.g., Final Countdown provides the ultimate waker experience combining latest innovative software and hardware technology into a climate neutral product free of cultural appropriation.>
 
 ## Members
 
-- Yuval Levy (andpe0@student.ltu.se)
+- Yuval Levy (yuvlev-1@student.ltu.se)
 - Calle Rautio (calrau-1@student.ltu.se)
-- Simon Larsson (jago3@student.ltu.se)
+- Simon Larsson (simlar-0@student.ltu.se)
 
 ## Hardware Features
 
@@ -38,11 +38,11 @@ Besides mandatory functionality the Final Countdown features:
 
 <e.g.>
 
-- Anders Petterson 3) Contribute to the mandatory goals 4) Prototyping the guessing game first on host, later porting to target including OLED SW. 5) TBD
+- Yuval Levy 3) Contribute to the mandatory goals 4) ... 5) ... 
 
 - Calle Rautio 3) Contribute to the mandatory goals 4)  5) TBD
 
-- Jacob Gonzales 3) Contribute to the mandatory goals 4) Battery backup design, power measurements, and low-power optimization 5) TBD
+- Simon Larsson 3) Contribute to the mandatory goals 4) ... 5) ... 
 
 ## HW References
 
@@ -50,6 +50,4 @@ Besides mandatory functionality the Final Countdown features:
 
 ## SW References
 
-- [Chrono] (https://crates.io/crates/chrono)
-- [ssd1306] (https://docs.rs/ssd1306/latest/ssd1306/)
-- [Embedded Graphics] (https://docs.rs/embedded-graphics/latest/embedded_graphics/)
+- Crates used in the project... 
