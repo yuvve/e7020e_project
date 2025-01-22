@@ -13,7 +13,7 @@
 - Display given by Lab
 - Humidifier
 - <battery backup for RTC, and alarm time>
-- power over usb (micro or something else)
+- power over usb (mini or something else)
 - Tempature and humidity sensor
 - inbedded Speaker, should be able to play music
 - Rotary encoder, button
