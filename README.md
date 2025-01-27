@@ -11,14 +11,15 @@
 ## Hardware Features
 
 - [I2C Display](https://se.rs-online.com/web/p/oled-displays/2543581)
-- Humidifier
+- Humidifier for sea effect
 - <battery backup for RTC, and alarm time>
 - power over usb (mini or something else)
 - Tempature and humidity sensor
-- inbedded Speaker, should be able to play music
+- [Miniature speaker](https://se.rs-online.com/web/p/miniature-speakers/2596233)
+- Amplifier for the speaker
 - Rotary encoder, button
-- Haptic Acuator
-- Added Fan
+- [Haptic Actuator](https://se.rs-online.com/web/p/motor-driver-ics/9142942P?gb=s)
+- Fan for wind effect
 
 and mandatory components for:
 
