@@ -10,7 +10,7 @@
 
 ## Hardware Features
 
-- Display given by Lab
+- [I2C Display](https://se.rs-online.com/web/p/oled-displays/2543581)
 - Humidifier
 - <battery backup for RTC, and alarm time>
 - power over usb (mini or something else)
