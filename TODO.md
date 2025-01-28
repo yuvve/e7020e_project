@@ -9,10 +9,10 @@ Minimal requirements
 - [ ] Display that shows current time
 
 Extra 
-- [ ] Temprature is shown on display, humidity
-- [ ] Humidifier effect, water tank, 
+- [ ] Temprature is shown on display
+- [ ] Humidifier effect, water tank
 - [ ] Inbedded Speaker
 - [ ] Rotary encoder, button
 - [ ] Buzzer effect - Haptic Acuator
-- [ ] Added Fan pointng somewhere
+- [ ] Added Fan pointing somewhere
 - [ ] Battery backup for RTC and Alarm times
