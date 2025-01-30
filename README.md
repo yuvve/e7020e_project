@@ -12,7 +12,7 @@ The Sea Breeze Clock provides ultimate comfort for deep sleepers. Featuring a bu
 
 - Display
 - Humidifier for sea effect
-- RTC Battery
+- Backup battery for RTC and alarm time
 - Speaker
 - User interface (encoder / button)
 - Programming interface
@@ -32,20 +32,47 @@ Besides mandatory functionality the Final Countdown features:
 
 ## Individual grading goals and contributions
 
-- Yuval Levy 3) Contribute to the mandatory goals 4) ... 5) ...
+### Yuval Levy
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Backup battery (HW & SW)
+- Haptic actuator (HW & SW)
+#### 5 
+- Speaker (HW & SW)
+- Power optimization (SW)
+- Humidifier HW
 
-- Calle Rautio 3) Contribute to the mandatory goals 4) Help with additional features 5) TBD
+### Calle Rautio
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Humidifier SW
+- Fan HW
+- Fan SW
+- HW component optimization (fewer MOSFETS)
+#### 5 
+- Speaker (HW & SW)
 
-- Simon Larsson 3) Contribute to the mandatory goals 4) ... 5) ...
+### Simon Larsson
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Backup battery (HW & SW)
+- Temperature on display SW
+#### 5 
+- Speaker (HW & SW)
+- Rotary encoder SW
+- Power optimization (SW)
 
 ## HW References
 
-- [I2C Display](https://se.rs-online.com/web/p/oled-displays/2543581)
-- [Humidifier for sea effect]() **DATASHEET MISSING!**
-- [Battery backup for RTC and alarm time (CR2032)](https://se.rs-online.com/web/p/battery-holders/2378382?gb=s)
+- [I2C Display](https://se.rs-online.com/web/p/oled-displays/254381)
+- [Humidifier for sea effect]() **DATASHEET MISSING!** [application](https://media.discordapp.net/attachments/1330909785532403752/1331984447591157781/temp.jpg?ex=679c2c6f&is=679adaef&hm=88c490139144ee49c3b781ae197cfe645891c9c844eaf4aa021b754f39057ddf&=&format=webp&width=810&height=403)
+- [Holder for backup battery (CR2032)](https://se.rs-online.com/web/p/battery-holders/2378272?gb=s)
 - [Miniature speaker](https://se.rs-online.com/web/p/miniature-speakers/2596233)
-- [Amplifier for the speaker]() **DATASHEET MISSING!**
-- [Rotary encoder, preferably with built-in putton]() **DATASHEET MISSING!** if no push button included, use extra button
+- [DAC and amplifier for the speaker](https://se.farnell.com/texas-instruments/tas5722lrsmr/amplifier-class-d-15w-vqfn-32/dp/2748912)
+- [Rotary encoder, preferably with built-in button](https://se.rs-online.com/web/p/mechanical-rotary-encoders/7377773)
 - [Push button for resetting the program]() (**included**, alternatives:  TE Connectivity 1825910-7,  Alps Alpine STTSKHHBS)
 - [Haptic Actuator](https://se.farnell.com/pui-audio/hd-emc1203-lw20-r/dc-motor-3vdc-26ohm-12000rpm/dp/4411154)
 - [Fan for wind effect](https://se.rs-online.com/web/p/axial-fans/2887621?gb=s) (hamster sized)
@@ -55,7 +82,6 @@ Besides mandatory functionality the Final Countdown features:
 - Serial programming header (**included**)
 - Serial communication header to host, over dev-kit VCP (**included**)
 - Case made either of wood or 3D-printed
-- Buzzer?
 
 ## SW References
 
