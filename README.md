@@ -1,57 +1,88 @@
-# e7020e Project Name: <e.g., Final Countdown>
+# Sea Breeze Clock
 
-<short selling description, e.g., Final Countdown provides the ultimate waker experience combining latest innovative software and hardware technology into a climate neutral product free of cultural appropriation.>
+The Sea Breeze Clock provides ultimate comfort for deep sleepers. Featuring a built-in humidifier, temperature sensor displayed on screen, and a gentle wake-up vibration function, it is designed to help you start your day feeling refreshed as if you have woken up on a private island.
 
 ## Members
 
-- Anders Petterson (andpe0@student.ltu.se)
-- Anna Broman (anabro1@student.ltu.se)
-- Jacob Gonzales (jago3@student.ltu.se)
+- Yuval Levy (yuvlev-1@student.ltu.se)
+- Calle Rautio (calrau-1@student.ltu.se)
+- Simon Larsson (simlar-0@student.ltu.se)
 
 ## Hardware Features
 
-- <e.g., oled screen>
-- <e.g., (4) buttons for navigation>
-- <e.g., battery backup of RTC>
-- <e.g., power over usb>
-
-and mandatory components for:
-
-- Analog sensing <e.g., photo resistor>
-- Serial communication interface to host, <e.g. over dev-kit VCP>
-- LED
-- Buzzer
+- Display
+- Humidifier for sea effect
+- Backup battery for RTC and alarm time
+- Speaker
+- User interface (encoder / button)
+- Programming interface
+- Temperature measurement
+- Fan for (hamster sized) sea breeze effect
+- USB MINI connection
+- Haptic actuator for SUPER GENTLE WAKE
+- Hard(ish) protective case for the board
 
 ## Functionality and SW features
 
 Besides mandatory functionality the Final Countdown features:
 
-<e.g.>
-
-- Automatic RTC update by UTC network time and Time Zone alignment
-- Alarm off functionality requiring the user to guess a random number between 0 and 20 using 3 attempts at most. Feedback given as "too low", "too high" or "you got it!" which turns off the alarm. Fail creates a new random number for the user to guess until correct number is guessed.
-- Ability to read and set a new alarm from device using the (4) navigation buttons.
+- Set Clock with long push and alarm time with short push. Change of volume with rotary button on default screen.
+- CLI can control temperature sensor, speaker volume, intensity of buzzer, and fan speed control from CLI, and everything else.
+- Maybe additional features.
 
 ## Individual grading goals and contributions
 
-<e.g.>
+### Yuval Levy
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Backup battery (HW & SW)
+- Haptic actuator (HW & SW)
+#### 5 
+- Speaker (HW & SW)
+- Power optimization (SW)
+- Humidifier HW
 
-- Anders Petterson 3) Contribute to the mandatory goals 4) Prototyping the guessing game first on host, later porting to target including OLED SW. 5) TBD
+### Calle Rautio
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Humidifier SW
+- Fan HW
+- Fan SW
+- HW component optimization (fewer MOSFETS)
+#### 5 
+- Speaker (HW & SW)
 
-- Anna Broman 3) Contribute to the mandatory goals 4) Prototyping UTC/Localization on host, later porting to target including RTC read/write functionality. 5) TBD
-
-- Jacob Gonzales 3) Contribute to the mandatory goals 4) Battery backup design, power measurements, and low-power optimization 5) TBD
+### Simon Larsson
+#### 3 
+- Contribute to the mandatory goals
+#### 4
+- Backup battery (HW & SW)
+- Temperature on display SW
+#### 5 
+- Speaker (HW & SW)
+- Rotary encoder SW
+- Power optimization (SW)
 
 ## HW References
 
-<e.g.>
-
-- [oled display](https://en.odroid.se/products/0-96-tum-oled-spi-i2c-granssnitt-vinklad-horisontell-pinheader?pr_prod_strat=e5_desc&pr_rec_id=b23563853&pr_rec_pid=6585308020814&pr_ref_pid=6585303924814&pr_seq=uniform/)
+- [I2C Display](https://se.rs-online.com/web/p/oled-displays/254381)
+- [Humidifier for sea effect]() **DATASHEET MISSING!** [application](https://media.discordapp.net/attachments/1330909785532403752/1331984447591157781/temp.jpg?ex=679c2c6f&is=679adaef&hm=88c490139144ee49c3b781ae197cfe645891c9c844eaf4aa021b754f39057ddf&=&format=webp&width=810&height=403)
+- [Holder for backup battery (CR2032)](https://se.rs-online.com/web/p/battery-holders/2378272?gb=s)
+- [Miniature speaker](https://se.rs-online.com/web/p/miniature-speakers/2596233)
+- [DAC and amplifier for the speaker](https://se.farnell.com/texas-instruments/tas5722lrsmr/amplifier-class-d-15w-vqfn-32/dp/2748912)
+- [Rotary encoder, preferably with built-in button](https://se.rs-online.com/web/p/mechanical-rotary-encoders/7377773)
+- [Push button for resetting the program]() (**included**, alternatives:  TE Connectivity 1825910-7,  Alps Alpine STTSKHHBS)
+- [Haptic Actuator](https://se.farnell.com/pui-audio/hd-emc1203-lw20-r/dc-motor-3vdc-26ohm-12000rpm/dp/4411154)
+- [Fan for wind effect](https://se.rs-online.com/web/p/axial-fans/2887621?gb=s) (hamster sized)
+- LED (**included**)
+- USB Mini (**included**)
+- [Analog temperature sensor](https://www.digikey.se/sv/products/detail/epcos-tdk-electronics/B57891M0103K000/3500546) (**included**)
+- Serial programming header (**included**)
+- Serial communication header to host, over dev-kit VCP (**included**)
+- Case made either of wood or 3D-printed
 
 ## SW References
 
-<e.g.>
-
-- [Chrono] (https://crates.io/crates/chrono)
-- [ssd1306] (https://docs.rs/ssd1306/latest/ssd1306/)
-- [Embedded Graphics] (https://docs.rs/embedded-graphics/latest/embedded_graphics/)
+- Crates used in the project...
