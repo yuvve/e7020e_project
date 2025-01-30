@@ -8,6 +8,8 @@
 - Calle: researched parts and circuits
 - Simon: researched parts and circuits
 ## 30.01
-- Yuval: researched parts and circuits
+- Yuval: 
+  - researched parts and circuits
+  - created backup battery schematics
 - Calle: researched parts and circuits
 - Simon: researched parts and circuits
