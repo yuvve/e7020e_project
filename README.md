@@ -60,6 +60,7 @@ Besides mandatory functionality the Final Countdown features:
 #### 4
 - Backup battery (HW & SW)
 - Temperature on display SW
+- Rotary encoder HW
 #### 5 
 - Speaker (HW & SW)
 - Rotary encoder SW
