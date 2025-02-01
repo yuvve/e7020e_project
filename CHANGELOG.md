@@ -13,3 +13,5 @@
   - created backup battery schematics
 - Calle: researched parts and circuits
 - Simon: researched parts and circuits
+## 31.01
+- Simon: add base schematic and circuit for: oled and rotary encoder.
