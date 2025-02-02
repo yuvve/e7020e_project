@@ -68,6 +68,7 @@ Besides mandatory functionality the Final Countdown features:
 
 ## HW References
 
+- [MCU](https://docs.nordicsemi.com/bundle/ps_nrf52833/page/keyfeatures_html5.html) (**included**)
 - [I2C Display](https://se.rs-online.com/web/p/oled-displays/2543581)
 - [Humidifier for sea effect]() **DATASHEET MISSING!** [application](https://media.discordapp.net/attachments/1330909785532403752/1331984447591157781/temp.jpg?ex=679c2c6f&is=679adaef&hm=88c490139144ee49c3b781ae197cfe645891c9c844eaf4aa021b754f39057ddf&=&format=webp&width=810&height=403)
 - [Holder for backup battery (CR2032)](https://se.rs-online.com/web/p/battery-holders/2378272?gb=s)
