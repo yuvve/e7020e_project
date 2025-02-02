@@ -15,3 +15,5 @@
 - Simon: researched parts and circuits
 ## 31.01
 - Simon: add base schematic and circuit for: oled and rotary encoder.
+## 02.02
+- Calle: Made a basic schematic for fan and showed potential solution to saving GPIO pins
