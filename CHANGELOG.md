@@ -19,3 +19,4 @@
 - Calle: Made a basic schematic for fan and showed potential solution to saving GPIO pins
 - Yuval:
   - Add haptic actuator schematic
+  - Add humidifier schematic
