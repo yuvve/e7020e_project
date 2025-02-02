@@ -1387,7 +1387,7 @@
 		)
 		(uuid "be823839-8b9e-4665-ae20-554df0dbfa74")
 	)
-	(label "HAPTIC_CONTROL_PIN"
+	(label "HAPTIC_MOSFET_GATE"
 		(at 87.63 128.27 0)
 		(effects
 			(font
