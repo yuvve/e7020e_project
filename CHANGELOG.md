@@ -20,3 +20,7 @@
 - Yuval:
   - Add haptic actuator schematic
   - Add humidifier schematic
+## 03.02
+- Yuval:
+  - Update humidifier schematic
+  - Update haptic actuator schematic

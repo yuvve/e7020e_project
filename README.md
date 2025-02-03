@@ -73,17 +73,19 @@ Besides mandatory functionality the Final Countdown features:
 - [Humidifier for sea effect]() **DATASHEET MISSING!** [application](https://media.discordapp.net/attachments/1330909785532403752/1331984447591157781/temp.jpg?ex=679c2c6f&is=679adaef&hm=88c490139144ee49c3b781ae197cfe645891c9c844eaf4aa021b754f39057ddf&=&format=webp&width=810&height=403)
 - [Holder for backup battery (CR2032)](https://se.rs-online.com/web/p/battery-holders/2378272?gb=s)
 - [Miniature speaker](https://se.rs-online.com/web/p/miniature-speakers/2596233)
-- [DAC and amplifier for the speaker](https://se.farnell.com/texas-instruments/tas5722lrsmr/amplifier-class-d-15w-vqfn-32/dp/2748912)
+- [DAC and amplifier for the speaker](https://www.digikey.se/en/products/detail/analog-devices-inc-maxim-integrated/MAX98357AETE-T/4936122)
 - [Rotary encoder, preferably with built-in button](https://se.rs-online.com/web/p/mechanical-rotary-encoders/7377773)
 - [Push button for resetting the program]() (**included**, alternatives:  TE Connectivity 1825910-7,  Alps Alpine STTSKHHBS)
 - [Haptic Actuator](https://se.farnell.com/pui-audio/hd-emc1203-lw20-r/dc-motor-3vdc-26ohm-12000rpm/dp/4411154)
 - [Fan for wind effect](https://se.rs-online.com/web/p/axial-fans/2887621?gb=s) (hamster sized)
-- LED (**included**)
+- [LED](https://se.rs-online.com/web/p/leds/2648165) (**included**)
 - USB Mini (**included**)
 - [Analog temperature sensor](https://www.digikey.se/sv/products/detail/epcos-tdk-electronics/B57891M0103K000/3500546) (**included**)
 - Serial programming header (**included**)
 - Serial communication header to host, over dev-kit VCP (**included**)
 - Case made either of wood or 3D-printed
+### Other Parts
+- [Bipolar junction transistor (SMD)](https://se.rs-online.com/web/p/bipolar-transistors/7258607?gb=s)
 
 ## SW References
 
