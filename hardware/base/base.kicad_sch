@@ -2269,7 +2269,7 @@
 				)
 			)
 		)
-		(symbol "Device:D"
+		(symbol "Device:D_Schottky"
 			(pin_numbers hide)
 			(pin_names
 				(offset 1.016) hide)
@@ -2284,7 +2284,7 @@
 					)
 				)
 			)
-			(property "Value" "D"
+			(property "Value" "D_Schottky"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -2310,7 +2310,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Diode"
+			(property "Description" "Schottky diode"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2319,25 +2319,7 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Device" "D"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=K 2=A"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "diode"
+			(property "ki_keywords" "diode Schottky"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2355,19 +2337,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "D_0_1"
-				(polyline
-					(pts
-						(xy -1.27 1.27) (xy -1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
+			(symbol "D_Schottky_0_1"
 				(polyline
 					(pts
 						(xy 1.27 0) (xy -1.27 0)
@@ -2392,8 +2362,20 @@
 						(type none)
 					)
 				)
+				(polyline
+					(pts
+						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 			)
-			(symbol "D_1_1"
+			(symbol "D_Schottky_1_1"
 				(pin passive line
 					(at -3.81 0 0)
 					(length 2.54)
@@ -3926,9 +3908,10 @@
 				)
 			)
 		)
-		(symbol "Diode:1N4001"
+		(symbol "Diode:SS16"
 			(pin_numbers hide)
-			(pin_names hide)
+			(pin_names
+				(offset 1.016) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3940,7 +3923,7 @@
 					)
 				)
 			)
-			(property "Value" "1N4001"
+			(property "Value" "SS16"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -3948,7 +3931,16 @@
 					)
 				)
 			)
-			(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+			(property "Footprint" "Diode_SMD:D_SMA"
+				(at 0 -4.445 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.vishay.com/docs/88746/ss12.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3957,7 +3949,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://www.vishay.com/docs/88503/1n4001.pdf"
+			(property "Description" "60V 1A Schottky Diode, SMA"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3966,7 +3958,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "50V 1A General Purpose Rectifier Diode, DO-41"
+			(property "ki_keywords" "diode Schottky"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3975,7 +3967,7 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Device" "D"
+			(property "ki_fp_filters" "D*SMA*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3984,46 +3976,7 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Pins" "1=K 2=A"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "D*DO?41*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "1N4001_0_1"
-				(polyline
-					(pts
-						(xy -1.27 1.27) (xy -1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
+			(symbol "SS16_0_1"
 				(polyline
 					(pts
 						(xy 1.27 0) (xy -1.27 0)
@@ -4048,8 +4001,20 @@
 						(type none)
 					)
 				)
+				(polyline
+					(pts
+						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 			)
-			(symbol "1N4001_1_1"
+			(symbol "SS16_1_1"
 				(pin passive line
 					(at -3.81 0 0)
 					(length 2.54)
@@ -6400,6 +6365,12 @@
 		(uuid "b455acbe-43ea-47bd-952c-3376f2b190bf")
 	)
 	(junction
+		(at 276.86 208.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b98ce4d5-90d1-41a8-839c-8484717951ba")
+	)
+	(junction
 		(at 96.52 229.87)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6410,12 +6381,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bf147708-7bdc-47e4-aaaf-6a0a24f5bfc6")
-	)
-	(junction
-		(at 273.05 208.28)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bf5723e9-0d44-470f-a359-5e4c2b2659a1")
 	)
 	(junction
 		(at 35.56 39.37)
@@ -7407,7 +7372,7 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 208.28) (xy 273.05 208.28)
+			(xy 269.24 208.28) (xy 276.86 208.28)
 		)
 		(stroke
 			(width 0)
@@ -7624,16 +7589,6 @@
 			(type default)
 		)
 		(uuid "84f0d5b7-69f0-4887-9d37-ea5675e6c164")
-	)
-	(wire
-		(pts
-			(xy 273.05 241.3) (xy 273.05 237.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "854ef177-adee-49a9-ade6-e9a9b7c6e830")
 	)
 	(wire
 		(pts
@@ -8147,7 +8102,7 @@
 	)
 	(wire
 		(pts
-			(xy 273.05 208.28) (xy 273.05 234.95)
+			(xy 276.86 208.28) (xy 276.86 236.22)
 		)
 		(stroke
 			(width 0)
@@ -8184,6 +8139,16 @@
 			(type default)
 		)
 		(uuid "ccf86724-c842-431f-aea9-955541b31648")
+	)
+	(wire
+		(pts
+			(xy 273.05 238.76) (xy 273.05 241.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd60c270-bc05-4b16-8ea5-6311137a59d8")
 	)
 	(wire
 		(pts
@@ -8537,6 +8502,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 238.76) (xy 273.05 238.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f5e95255-60e3-4dfa-be76-3c5fde753520")
+	)
+	(wire
+		(pts
 			(xy 187.96 54.61) (xy 187.96 91.44)
 		)
 		(stroke
@@ -8564,16 +8539,6 @@
 			(type default)
 		)
 		(uuid "f9f7173c-9463-46ef-9b0e-015f64f25179")
-	)
-	(wire
-		(pts
-			(xy 273.05 208.28) (xy 276.86 208.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fab299d3-2545-4c8c-9070-cd60a35a2532")
 	)
 	(wire
 		(pts
@@ -8888,6 +8853,7 @@
 	)
 	(label "DETECT_VSOURCE"
 		(at 185.42 109.22 180)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8898,6 +8864,7 @@
 	)
 	(label "HUMIDIFIER_MOSFET_GATE"
 		(at 143.51 152.4 90)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8908,6 +8875,7 @@
 	)
 	(label "AMP_LRCLK"
 		(at 99.06 99.06 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8929,6 +8897,7 @@
 	)
 	(label "AMP_BCLK"
 		(at 99.06 96.52 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8961,6 +8930,7 @@
 	)
 	(label "AMP_DIN"
 		(at 138.43 62.23 270)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9070,6 +9040,7 @@
 	)
 	(label "LED_HAPTIC"
 		(at 148.59 62.23 270)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9492,92 +9463,6 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "#PWR012")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D")
-		(at 86.36 215.9 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "14ed843d-168d-4cbd-98f0-ce5c880c8883")
-		(property "Reference" "D5"
-			(at 86.36 209.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "D"
-			(at 86.36 212.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 86.36 215.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 86.36 215.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode"
-			(at 86.36 215.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 86.36 215.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 86.36 215.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f868caf1-0317-4354-88ff-7dd7ac133244")
-		)
-		(pin "2"
-			(uuid "ad436b73-c0e2-4459-998c-098d9243b808")
-		)
-		(instances
-			(project "base"
-				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
-					(reference "D5")
 					(unit 1)
 				)
 			)
@@ -10886,7 +10771,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "HD-EMC1203-LW20-R:PUI_HD-EMC1203-LW20-R"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 342.9 30.48 0)
 			(effects
 				(font
@@ -11106,7 +10991,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x02_Pin")
-		(at 278.13 237.49 180)
+		(at 281.94 238.76 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11115,7 +11000,7 @@
 		(fields_autoplaced yes)
 		(uuid "35490dd0-5e4d-4d58-8986-e8ec7f4da298")
 		(property "Reference" "J6"
-			(at 279.4 234.9499 0)
+			(at 283.21 236.2199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11124,7 +11009,7 @@
 			)
 		)
 		(property "Value" "Conn_01x02_Pin"
-			(at 279.4 237.4899 0)
+			(at 283.21 238.7599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11132,8 +11017,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
-			(at 278.13 237.49 0)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+			(at 281.94 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11142,7 +11027,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 278.13 237.49 0)
+			(at 281.94 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11151,7 +11036,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 278.13 237.49 0)
+			(at 281.94 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11462,92 +11347,6 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "#PWR0107")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D")
-		(at 88.9 236.22 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3a3dfa8a-b639-41e1-bfa9-b67b99d6a1f2")
-		(property "Reference" "D4"
-			(at 88.9 229.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "D"
-			(at 88.9 232.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 88.9 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 88.9 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode"
-			(at 88.9 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 88.9 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 88.9 236.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0e45ee9c-3222-4efb-a7f0-5d30156a0192")
-		)
-		(pin "2"
-			(uuid "d5a1b957-c923-4add-b022-410e804e2f94")
-		)
-		(instances
-			(project "base"
-				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
-					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -13373,7 +13172,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "796136-1:TE_796136-1"
+		(property "Footprint" "Battery Holder (796136-1):TE_796136-1"
 			(at 78.74 239.776 90)
 			(effects
 				(font
@@ -14848,6 +14647,74 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:D_Schottky")
+		(at 88.9 236.22 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9a4f08a3-6e78-4164-a794-3718dd23aae1")
+		(property "Reference" "D3"
+			(at 89.2175 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "D_Schottky"
+			(at 89.2175 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_MiniMELF"
+			(at 88.9 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 88.9 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Schottky diode"
+			(at 88.9 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "154027cb-79ea-4469-bb7a-71cff6c02f9a")
+		)
+		(pin "2"
+			(uuid "dc8290dc-7b4d-4fa1-95dc-1196494c0bc5")
+		)
+		(instances
+			(project "base"
+				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
+					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 379.73 76.2 90)
 		(unit 1)
@@ -15336,93 +15203,6 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "GND4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Diode:1N4001")
-		(at 313.69 31.75 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a90b5689-de9d-4b6d-ad35-7af6461890ce")
-		(property "Reference" "D2"
-			(at 316.23 30.4799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1N4001"
-			(at 316.23 33.0199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
-			(at 313.69 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.vishay.com/docs/88503/1n4001.pdf"
-			(at 313.69 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "50V 1A General Purpose Rectifier Diode, DO-41"
-			(at 313.69 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 313.69 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 313.69 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "2781dd69-82f4-4fa1-86e9-771bb01f63e4")
-		)
-		(pin "2"
-			(uuid "a7a6cbfe-d6aa-414f-bc5a-b01753f85b40")
-		)
-		(instances
-			(project "base"
-				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
-					(reference "D2")
 					(unit 1)
 				)
 			)
@@ -17176,6 +16956,74 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:D_Schottky")
+		(at 86.36 215.9 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e9b3732a-6d78-4e9f-8fed-dc40cf4852a6")
+		(property "Reference" "D4"
+			(at 86.6775 209.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "D_Schottky"
+			(at 86.6775 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_MiniMELF"
+			(at 86.36 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 86.36 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Schottky diode"
+			(at 86.36 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "46a8827a-17dc-4730-becb-47d7d959e93e")
+		)
+		(pin "2"
+			(uuid "2817c22c-2bf1-486a-bcb2-aa1f888197cf")
+		)
+		(instances
+			(project "base"
+				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
+					(reference "D4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 232.41 215.9 90)
 		(unit 1)
@@ -17419,7 +17267,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 292.1 113.03 0)
 			(effects
 				(font
@@ -17456,6 +17304,76 @@
 			(project ""
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "LS1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Diode:SS16")
+		(at 313.69 31.75 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "eee0a6ed-66a2-4576-8ad7-682e370211d0")
+		(property "Reference" "D5"
+			(at 316.23 30.1624 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SS16"
+			(at 316.23 32.7024 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Schottky Rectifier (SS16):DIOM4325X250N"
+			(at 309.245 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.vishay.com/docs/88746/ss12.pdf"
+			(at 313.69 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "60V 1A Schottky Diode, SMA"
+			(at 313.69 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "a1c353d2-3ffd-41d8-b097-b6a6a6b5d6aa")
+		)
+		(pin "1"
+			(uuid "98dad7be-b140-4ee0-a0d1-d38bd4e74002")
+		)
+		(instances
+			(project ""
+				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
+					(reference "D5")
 					(unit 1)
 				)
 			)

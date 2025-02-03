@@ -1,7 +1,9 @@
 (fp_lib_table
   (version 7)
-  (lib (name "E7020E")(type "KiCad")(uri "${KIPRJMOD}/../assets/Base/E7020E.pretty")(options "")(descr ""))
-  (lib (name "BJT SMD Transistor (MMBT2222A_DG_215)")(type "KiCad")(uri "${KIPRJMOD}/../assets/BJT SMD Transistor (MMBT2222A_DG_215)")(options "")(descr ""))
-  (lib (name "Haptic Actuator (HD-EMC1203-LW20-R)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Haptic Actuator (HD-EMC1203-LW20-R)")(options "")(descr ""))
-  (lib (name "Battery Holder (796136-1)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Battery Holder (796136-1)")(options "")(descr ""))
+  (lib (name "E7020E")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_hw/e7020e-kicad/E7020E.pretty")(options "")(descr ""))
+  (lib (name "Haptic Actuator (HD-EMC1203-LW20-R)")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_project/hardware/assets/Haptic Actuator (HD-EMC1203-LW20-R)")(options "")(descr ""))
+  (lib (name "BJT SMD Transistor (MMBT2222A_DG_215)")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_project/hardware/assets/BJT SMD Transistor (MMBT2222A_DG_215)")(options "")(descr ""))
+  (lib (name "Battery Holder (796136-1)")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_project/hardware/assets/Battery Holder (796136-1)")(options "")(descr ""))
+  (lib (name "Base")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_project/hardware/assets/Base")(options "")(descr ""))
+  (lib (name "Schottky Rectifier (SS16)")(type "KiCad")(uri "/home/simon/Repos/E7020E/e7020e_project/hardware/assets/Schottky Rectifier (SS16)")(options "")(descr ""))
 )
