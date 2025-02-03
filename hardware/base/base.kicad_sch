@@ -6265,12 +6265,6 @@
 		(uuid "ea99e48e-4bbe-496a-95f2-687f3321c711")
 	)
 	(junction
-		(at 276.86 233.68)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ee6e221d-01bb-4630-9b5e-aac8e9d1010a")
-	)
-	(junction
 		(at 342.9 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7008,16 +7002,6 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 233.68) (xy 276.86 241.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "561634a8-7a39-483c-b0e5-101e3cff64b6")
-	)
-	(wire
-		(pts
 			(xy 199.39 54.61) (xy 199.39 60.96)
 		)
 		(stroke
@@ -7108,16 +7092,6 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 208.28) (xy 276.86 226.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5f274a65-a7b7-4be0-9bf2-85c853587d0f")
-	)
-	(wire
-		(pts
 			(xy 116.84 153.67) (xy 119.38 153.67)
 		)
 		(stroke
@@ -7175,16 +7149,6 @@
 			(type default)
 		)
 		(uuid "65ba3d34-1625-4664-b36b-255c4219ef17")
-	)
-	(wire
-		(pts
-			(xy 276.86 232.41) (xy 276.86 233.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "65f35910-4b2e-4ca5-8c2d-adbbbc723e74")
 	)
 	(wire
 		(pts
@@ -7808,6 +7772,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 233.68) (xy 276.86 241.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3c26681-e75e-4578-8679-8eb0e42dfff2")
+	)
+	(wire
+		(pts
 			(xy 199.39 74.93) (xy 199.39 93.98)
 		)
 		(stroke
@@ -8005,6 +7979,16 @@
 			(type default)
 		)
 		(uuid "ccf86724-c842-431f-aea9-955541b31648")
+	)
+	(wire
+		(pts
+			(xy 276.86 208.28) (xy 276.86 226.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd32df56-03c7-4fb1-8736-f241db5a71af")
 	)
 	(wire
 		(pts
@@ -13723,6 +13707,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:Crystal")
+		(at 276.86 229.87 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7c5a5fdf-5720-4a8a-9257-1c51e2bc4a7c")
+		(property "Reference" "Y3"
+			(at 280.67 228.5999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1.70 MHz"
+			(at 280.67 231.1399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Transducer"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "c6220056-3c2c-480a-88d0-93eb3f121588")
+		)
+		(pin "1"
+			(uuid "4eb57840-4083-42a0-8524-a15e07d93fd5")
+		)
+		(instances
+			(project "base"
+				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
+					(reference "Y3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 207.01 64.77 0)
 		(unit 1)
@@ -15220,76 +15274,6 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "C18")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:Crystal")
-		(at 276.86 229.87 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b09ac0c3-5e1d-46cf-968b-7096d29efb6e")
-		(property "Reference" "Y3"
-			(at 280.67 228.5999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "1.70 MHz"
-			(at 280.67 231.1399 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
-			(at 276.86 229.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 276.86 229.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Transducer"
-			(at 276.86 229.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "10c2c902-43d3-4440-a13d-9dc699f5cb16")
-		)
-		(pin "1"
-			(uuid "816b89f2-b5c6-45eb-a5fa-3f0b0821edc6")
-		)
-		(instances
-			(project ""
-				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
-					(reference "Y3")
 					(unit 1)
 				)
 			)
