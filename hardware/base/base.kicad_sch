@@ -558,166 +558,6 @@
 				)
 			)
 		)
-		(symbol "Connector:Conn_01x02_Pin"
-			(pin_names
-				(offset 1.016) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "J"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Conn_01x02_Pin"
-				(at 0 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Generic connector, single row, 01x02, script generated"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_locked" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "connector"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Connector*:*_1x??_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Conn_01x02_Pin_1_1"
-				(polyline
-					(pts
-						(xy 1.27 -2.54) (xy 0.8636 -2.54)
-					)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy 0.8636 0)
-					)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 0.8636 -2.413)
-					(end 0 -2.667)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 0.8636 0.127)
-					(end 0 -0.127)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 3.81)
-					(name "Pin_1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -2.54 180)
-					(length 3.81)
-					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Connector:TestPoint"
 			(pin_numbers hide)
 			(pin_names
@@ -6425,6 +6265,12 @@
 		(uuid "ea99e48e-4bbe-496a-95f2-687f3321c711")
 	)
 	(junction
+		(at 276.86 233.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ee6e221d-01bb-4630-9b5e-aac8e9d1010a")
+	)
+	(junction
 		(at 342.9 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7022,7 +6868,7 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 236.22) (xy 85.09 236.22)
+			(xy 78.74 236.22) (xy 83.82 236.22)
 		)
 		(stroke
 			(width 0)
@@ -7162,6 +7008,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 233.68) (xy 276.86 241.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "561634a8-7a39-483c-b0e5-101e3cff64b6")
+	)
+	(wire
+		(pts
 			(xy 199.39 54.61) (xy 199.39 60.96)
 		)
 		(stroke
@@ -7252,6 +7108,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 208.28) (xy 276.86 226.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5f274a65-a7b7-4be0-9bf2-85c853587d0f")
+	)
+	(wire
+		(pts
 			(xy 116.84 153.67) (xy 119.38 153.67)
 		)
 		(stroke
@@ -7312,6 +7178,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 232.41) (xy 276.86 233.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "65f35910-4b2e-4ca5-8c2d-adbbbc723e74")
+	)
+	(wire
+		(pts
 			(xy 151.13 151.13) (xy 157.48 151.13)
 		)
 		(stroke
@@ -7322,7 +7198,7 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 236.22) (xy 96.52 236.22)
+			(xy 91.44 236.22) (xy 96.52 236.22)
 		)
 		(stroke
 			(width 0)
@@ -7722,7 +7598,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 215.9) (xy 96.52 215.9)
+			(xy 91.44 215.9) (xy 96.52 215.9)
 		)
 		(stroke
 			(width 0)
@@ -7852,7 +7728,7 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 215.9) (xy 82.55 215.9)
+			(xy 78.74 215.9) (xy 83.82 215.9)
 		)
 		(stroke
 			(width 0)
@@ -8102,16 +7978,6 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 208.28) (xy 276.86 236.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c9e13eed-5dec-472c-a8e9-150415f180f0")
-	)
-	(wire
-		(pts
 			(xy 171.45 113.03) (xy 171.45 111.76)
 		)
 		(stroke
@@ -8139,16 +8005,6 @@
 			(type default)
 		)
 		(uuid "ccf86724-c842-431f-aea9-955541b31648")
-	)
-	(wire
-		(pts
-			(xy 273.05 238.76) (xy 273.05 241.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cd60c270-bc05-4b16-8ea5-6311137a59d8")
 	)
 	(wire
 		(pts
@@ -8502,16 +8358,6 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 238.76) (xy 273.05 238.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f5e95255-60e3-4dfa-be76-3c5fde753520")
-	)
-	(wire
-		(pts
 			(xy 187.96 54.61) (xy 187.96 91.44)
 		)
 		(stroke
@@ -8732,7 +8578,6 @@
 	)
 	(label "+3.3V"
 		(at 298.45 20.32 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8743,7 +8588,6 @@
 	)
 	(label "AMP_LRCLK"
 		(at 243.84 113.03 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8754,7 +8598,6 @@
 	)
 	(label "VBUS"
 		(at 97.79 111.76 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8765,7 +8608,6 @@
 	)
 	(label "ROT_ENC_B"
 		(at 143.51 62.23 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8776,7 +8618,6 @@
 	)
 	(label "AMP_DIN"
 		(at 243.84 107.95 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8787,7 +8628,6 @@
 	)
 	(label "VBUS"
 		(at 270.51 81.28 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8798,7 +8638,6 @@
 	)
 	(label "VBUS"
 		(at 281.94 163.83 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8809,7 +8648,6 @@
 	)
 	(label "DETECT_VSOURCE"
 		(at 101.6 223.52 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8820,7 +8658,6 @@
 	)
 	(label "LED_HAPTIC"
 		(at 290.83 82.55 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8831,7 +8668,6 @@
 	)
 	(label "AMP_BCLK"
 		(at 243.84 110.49 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8842,7 +8678,6 @@
 	)
 	(label "ROT_ENC_A"
 		(at 140.97 62.23 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8853,7 +8688,6 @@
 	)
 	(label "DETECT_VSOURCE"
 		(at 185.42 109.22 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8864,7 +8698,6 @@
 	)
 	(label "HUMIDIFIER_MOSFET_GATE"
 		(at 143.51 152.4 90)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8875,7 +8708,6 @@
 	)
 	(label "AMP_LRCLK"
 		(at 99.06 99.06 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8886,7 +8718,6 @@
 	)
 	(label "HUMIDIFIER_MOSFET_GATE"
 		(at 184.15 215.9 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8897,7 +8728,6 @@
 	)
 	(label "AMP_BCLK"
 		(at 99.06 96.52 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8908,7 +8738,6 @@
 	)
 	(label "VBUS"
 		(at 36.83 215.9 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8919,7 +8748,6 @@
 	)
 	(label "ROT_ENC_S1"
 		(at 146.05 62.23 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8930,7 +8758,6 @@
 	)
 	(label "AMP_DIN"
 		(at 138.43 62.23 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8941,7 +8768,6 @@
 	)
 	(label "ROT_ENC_A"
 		(at 21.59 39.37 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8952,7 +8778,6 @@
 	)
 	(label "VBUS"
 		(at 119.38 153.67 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8963,7 +8788,6 @@
 	)
 	(label "VBUS"
 		(at 388.62 76.2 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8974,7 +8798,6 @@
 	)
 	(label "DEC4_6"
 		(at 133.35 66.04 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8985,7 +8808,6 @@
 	)
 	(label "DEC4_6"
 		(at 196.85 99.06 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8996,7 +8818,6 @@
 	)
 	(label "VBUS"
 		(at 247.65 193.04 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9007,7 +8828,6 @@
 	)
 	(label "VBUS"
 		(at 78.74 156.21 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9018,7 +8838,6 @@
 	)
 	(label "ROT_ENC_S1"
 		(at 53.34 20.32 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9029,7 +8848,6 @@
 	)
 	(label "ROT_ENC_B"
 		(at 66.04 39.37 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9040,7 +8858,6 @@
 	)
 	(label "LED_HAPTIC"
 		(at 148.59 62.23 270)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10399,7 +10216,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 273.05 241.3 0)
+		(at 276.86 241.3 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10408,7 +10225,7 @@
 		(fields_autoplaced yes)
 		(uuid "28f67c94-8515-4445-a367-fbd70681636f")
 		(property "Reference" "#PWR017"
-			(at 273.05 247.65 0)
+			(at 276.86 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10417,7 +10234,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 273.05 246.38 0)
+			(at 276.86 246.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10425,7 +10242,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 273.05 241.3 0)
+			(at 276.86 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10434,7 +10251,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 273.05 241.3 0)
+			(at 276.86 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10443,7 +10260,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 273.05 241.3 0)
+			(at 276.86 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10984,76 +10801,6 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "#PWR011")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 281.94 238.76 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "35490dd0-5e4d-4d58-8986-e8ec7f4da298")
-		(property "Reference" "J6"
-			(at 283.21 236.2199 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 283.21 238.7599 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
-			(at 281.94 238.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 281.94 238.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 281.94 238.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "ccb16a35-12b1-43df-9629-e1eb2433d647")
-		)
-		(pin "1"
-			(uuid "f7af0e8b-73a8-4bf4-953a-8d922b4050b5")
-		)
-		(instances
-			(project "base"
-				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
-					(reference "J6")
 					(unit 1)
 				)
 			)
@@ -14648,7 +14395,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Schottky")
-		(at 88.9 236.22 180)
+		(at 87.63 236.22 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14657,7 +14404,7 @@
 		(fields_autoplaced yes)
 		(uuid "9a4f08a3-6e78-4164-a794-3718dd23aae1")
 		(property "Reference" "D3"
-			(at 89.2175 229.87 0)
+			(at 87.9475 229.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14665,7 +14412,7 @@
 			)
 		)
 		(property "Value" "D_Schottky"
-			(at 89.2175 232.41 0)
+			(at 87.9475 232.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14673,7 +14420,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MiniMELF"
-			(at 88.9 236.22 0)
+			(at 87.63 236.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14682,7 +14429,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 88.9 236.22 0)
+			(at 87.63 236.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14691,7 +14438,7 @@
 			)
 		)
 		(property "Description" "Schottky diode"
-			(at 88.9 236.22 0)
+			(at 87.63 236.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15473,6 +15220,76 @@
 			(project "base"
 				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
 					(reference "C18")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Crystal")
+		(at 276.86 229.87 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b09ac0c3-5e1d-46cf-968b-7096d29efb6e")
+		(property "Reference" "Y3"
+			(at 280.67 228.5999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1.70 MHz"
+			(at 280.67 231.1399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Transducer"
+			(at 276.86 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "10c2c902-43d3-4440-a13d-9dc699f5cb16")
+		)
+		(pin "1"
+			(uuid "816b89f2-b5c6-45eb-a5fa-3f0b0821edc6")
+		)
+		(instances
+			(project ""
+				(path "/dfe856ae-b386-4d00-a01d-c584178519be"
+					(reference "Y3")
 					(unit 1)
 				)
 			)
@@ -16957,7 +16774,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Schottky")
-		(at 86.36 215.9 180)
+		(at 87.63 215.9 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16966,7 +16783,7 @@
 		(fields_autoplaced yes)
 		(uuid "e9b3732a-6d78-4e9f-8fed-dc40cf4852a6")
 		(property "Reference" "D4"
-			(at 86.6775 209.55 0)
+			(at 87.9475 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16974,7 +16791,7 @@
 			)
 		)
 		(property "Value" "D_Schottky"
-			(at 86.6775 212.09 0)
+			(at 87.9475 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16982,7 +16799,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_MiniMELF"
-			(at 86.36 215.9 0)
+			(at 87.63 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16991,7 +16808,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 86.36 215.9 0)
+			(at 87.63 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17000,7 +16817,7 @@
 			)
 		)
 		(property "Description" "Schottky diode"
-			(at 86.36 215.9 0)
+			(at 87.63 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
