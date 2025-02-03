@@ -24,3 +24,8 @@
 - Yuval:
   - Update humidifier schematic
   - Update haptic actuator schematic
+  - Combined all schematics
+- Simon:
+  - Combined all schematics
+- Calle:
+  - Combined all schematics
