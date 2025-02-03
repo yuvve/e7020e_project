@@ -1,4 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "E7020E")(type "KiCad")(uri "${KIPRJMOD}/../assets/Base/E7020E.pretty")(options "")(descr ""))
-)

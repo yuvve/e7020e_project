@@ -1,5 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "E7020E")(type "KiCad")(uri "${KIPRJMOD}/../assets/Base/E7020E.pretty")(options "")(descr ""))
-  (lib (name "Battery Holder (796136-1)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Battery Holder (796136-1)")(options "")(descr ""))
-)
