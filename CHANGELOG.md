@@ -29,3 +29,13 @@
   - Combined all schematics
 - Calle:
   - Combined all schematics
+## 04.02
+- Calle:
+  - Schematics review
+  - PCB Layout
+- Yuval:
+  - Schematics review
+  - PCB Layout
+- Simon:
+  - Schematics review
+  - PCB Layout
