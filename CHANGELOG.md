@@ -31,4 +31,13 @@
   - Combined all schematics
 ## 04.02
 - Calle:
-  - Did some layout on the PCB and started doing some easy routing
+  - PCB placement v1
+  - Reviewed the schematics with the proffessor
+- Yuval:
+  - Some PCB placement v2
+  - Reviewed the schematics with the proffessor
+  - Update circuit according to review
+- Simon:
+  - Most of the PCB placement v2
+  - Reviewed the schematics with the proffessor
+  - Update circuit according to review
