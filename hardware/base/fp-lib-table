@@ -5,4 +5,5 @@
   (lib (name "BJT SMD Transistor (MMBT2222A_DG_215)")(type "KiCad")(uri "${KIPRJMOD}/../assets/BJT SMD Transistor (MMBT2222A_DG_215)")(options "")(descr ""))
   (lib (name "Battery Holder (796136-1)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Battery Holder (796136-1)")(options "")(descr ""))
   (lib (name "Schottky Rectifier (SS16)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Schottky Rectifier (SS16)")(options "")(descr ""))
+  (lib (name "Schottky Diode (ZLLS500TA)")(type "KiCad")(uri "${KIPRJMOD}/../assets/Schottky Diode (ZLLS500TA)")(options "")(descr ""))
 )
