@@ -4,5 +4,5 @@
   (lib (name "HD-EMC1203-LW20-R")(type "KiCad")(uri "${KIPRJMOD}/../assets/Haptic Actuator (HD-EMC1203-LW20-R)/HD-EMC1203-LW20-R.kicad_sym")(options "")(descr ""))
   (lib (name "796136-1")(type "KiCad")(uri "${KIPRJMOD}/../assets/Battery Holder (796136-1)/796136-1.kicad_sym")(options "")(descr ""))
   (lib (name "SS16")(type "KiCad")(uri "${KIPRJMOD}/../assets/Schottky Rectifier (SS16)/SS16.kicad_sym")(options "")(descr ""))
-  (lib (name "SOT91P240X110-3N")(type "KiCad")(uri "C:/Users/yuval/Documents/Repos/e7020e_project/hardware/assets/Schottky Diode (ZLLS500TA)/SOT91P240X110-3N.kicad_sym")(options "")(descr ""))
+  (lib (name "SOT91P240X110-3N")(type "KiCad")(uri "${KIPRJMOD}/../assets/Schottky Diode (ZLLS500TA)/SOT91P240X110-3N.kicad_sym")(options "")(descr ""))
 )
