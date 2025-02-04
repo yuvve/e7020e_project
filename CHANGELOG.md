@@ -32,6 +32,7 @@
 ## 04.02
 - Calle:
   - PCB placement v1
+  - Some PCB placement v2
   - Reviewed the schematics with the proffessor
 - Yuval:
   - Some PCB placement v2
