@@ -29,3 +29,6 @@
   - Combined all schematics
 - Calle:
   - Combined all schematics
+## 04.02
+- Calle:
+  - Did some layout on the PCB and started doing some easy routing
