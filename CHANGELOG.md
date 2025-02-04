@@ -31,14 +31,11 @@
   - Combined all schematics
 ## 04.02
 - Calle:
-  - PCB placement v1
-  - Some PCB placement v2
-  - Reviewed the schematics with the proffessor
+  - Schematics review
+  - PCB Layout
 - Yuval:
-  - Some PCB placement v2
-  - Reviewed the schematics with the proffessor
-  - Update circuit according to review
+  - Schematics review
+  - PCB Layout
 - Simon:
-  - Most of the PCB placement v2
-  - Reviewed the schematics with the proffessor
-  - Update circuit according to review
+  - Schematics review
+  - PCB Layout
