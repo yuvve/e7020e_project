@@ -85,7 +85,7 @@ Besides mandatory functionality the Final Countdown features:
 - Serial communication header to host, over dev-kit VCP (**included**)
 - Case made either of wood or 3D-printed
 ### Other Parts
-- [Bipolar junction transistor (SMD)](https://se.rs-online.com/web/p/bipolar-transistors/7258607?gb=s)
+- Schottky diode ZLLS500TA ([link1](https://se.rs-online.com/web/p/schottky-diodes-rectifiers/0155096?gb=s), [link2](https://se.rs-online.com/web/p/schottky-diodes-rectifiers/1219937?gb=s)) x 3 (3 per board)
 
 ## SW References
 
