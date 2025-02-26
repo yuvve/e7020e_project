@@ -2,7 +2,7 @@
 
 #![no_main]
 #![no_std]
-//#![deny(unsafe_code)]
+#![deny(unsafe_code)]
 #![deny(warnings)]
 
 use {
