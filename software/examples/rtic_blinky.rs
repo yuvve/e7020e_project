@@ -34,7 +34,7 @@ mod app {
 
     #[local]
     struct Local {
-        led_33: LED,
+        led: LED,
     }
 
     #[init]
@@ -57,16 +57,13 @@ mod app {
         cx.device.NVMC.config.write(|w| w.wen().ren());
 
         // LED
-        // P0.13, connected to LED1 on nRF52840 DK
-        let led_33 = port0.p0_09.into_push_pull_output(Level::High).degrade();
-
-        rprintln!("nfc state: {:?}", uicr.nfcpins.read().protect().is_disabled());
+        let led: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::High).degrade();
 
         // Initiate periodic process
         let next_instant = mono.now() + 1.secs();
         blink::spawn_at(next_instant, next_instant).unwrap();
 
-        (Shared {}, Local { led_33}, init::Monotonics(mono))
+        (Shared {}, Local { led}, init::Monotonics(mono))
     }
 
     #[idle]
@@ -82,7 +79,7 @@ mod app {
     }
 
     // Drift free periodic task
-    #[task(local = [cnt: u32 = 0, led_33])]
+    #[task(local = [cnt: u32 = 0, led])]
     fn blink(cx: blink::Context, instant: fugit::TimerInstantU64<TIMER_HZ>) {
         let duration_since_start: fugit::MillisDurationU64 = (instant - TIME_0).convert();
         rprintln!(
@@ -93,10 +90,10 @@ mod app {
         );
         
         if *cx.local.cnt % 2 == 0 {
-             cx.local.led_33.set_high().ok();
+             cx.local.led.set_high().ok();
 
          } else {
-             cx.local.led_33.set_low().ok();
+             cx.local.led.set_low().ok();
 
          }
 
