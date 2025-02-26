@@ -51,3 +51,6 @@
   - Debugging and some hand soldering (PCB #1)
 - Calle:
   - Debugging and some hand soldering (PCB #1)
+## 26.02
+- Simon:
+  - PWM dimmable LED working, set NFC pins (P0.09/10) to GPIO mode.
