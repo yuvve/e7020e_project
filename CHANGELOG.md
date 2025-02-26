@@ -41,13 +41,13 @@
   - PCB Layout
 ## 20.02
 - Yuval:
-  - SMD soldering
+  - SMD soldering (PCB #1)
 - Simon:
-  - SMD soldering
+  - SMD soldering (PCB #1)
 ## 25.02
 - Yuval:
-  - Debugging and some hand soldering
+  - Debugging and some hand soldering (PCB #1)
 - Simon:
-  - Debugging and some hand soldering
+  - Debugging and some hand soldering (PCB #1)
 - Calle:
-  - Debugging and some hand soldering
+  - Debugging and some hand soldering (PCB #1)
