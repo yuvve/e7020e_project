@@ -39,3 +39,15 @@
 - Simon:
   - Schematics review
   - PCB Layout
+## 20.02
+- Yuval:
+  - SMD soldering
+- Simon:
+  - SMD soldering
+## 25.02
+- Yuval:
+  - Debugging and some hand soldering
+- Simon:
+  - Debugging and some hand soldering
+- Calle:
+  - Debugging and some hand soldering
