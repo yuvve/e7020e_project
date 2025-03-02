@@ -57,3 +57,4 @@
 ## 2.03
 - Simon:
   - Implemented reset button
+  - Rotary encoder, interrupt handling and debouncing
