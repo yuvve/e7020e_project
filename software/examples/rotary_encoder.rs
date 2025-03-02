@@ -23,8 +23,9 @@ const DUTY_TURNAROUND: u16 = 300;
 const MAX_DUTY: u16 = 1000;  // 1 kHz duty resolution
 const DUTY_STEP: u16 = 10;
 
-const LEFT: i16 = 1;
-const RIGHT: i16 = -1;
+const DECREASE: i16 = 1;
+const INCREASE: i16 = -1;
+const OFF: i16 = 0;
 const ROTARY_ENCODER_THRESHOLD_SEC: f32 = 0.08;
 
 #[rtic::app(device = nrf52833_hal::pac, dispatchers= [TIMER0])]
@@ -32,6 +33,7 @@ mod app {
     use super::*;
 
     type PWM = Pwm<PWM0>;
+    type GPIOTE = hal::gpiote::Gpiote;
 
     #[monotonic(binds = SysTick, default = true)]
     type MyMono = Systick<TIMER_HZ>;
@@ -44,6 +46,7 @@ mod app {
         qdec: Qdec,
         pwm: PWM,
         duty: u16,
+        gpiote: GPIOTE
     }
 
     #[init]
@@ -61,6 +64,13 @@ mod app {
             b: port0.p0_29.into_pullup_input().degrade(),
             led: None,
         };
+
+        // Rotary encoder switch
+        let rotary_switch = port0.p0_28.into_pullup_input().degrade();
+        let gpiote = hal::gpiote::Gpiote::new(cx.device.GPIOTE);
+        gpiote.channel0().input_pin(&rotary_switch)
+            .hi_to_lo()
+            .enable_interrupt();
 
         let qdec = Qdec::new(cx.device.QDEC, rotary_encoder_pins, SamplePeriod::_2048us);
         qdec.enable_interrupt(NumSamples::_1smpl)
@@ -91,6 +101,7 @@ mod app {
                 qdec,
                 pwm, 
                 duty,
+                gpiote
             }, 
             init::Monotonics(mono)
         )
@@ -121,13 +132,13 @@ mod app {
             *cx.local.compare_cycle = now;
 
             match direction {
-                LEFT => {
+                DECREASE => {
                     rprintln!("qdec_interrupt: LEFT");
-                    set_led::spawn(LEFT).unwrap()
+                    set_led::spawn(DECREASE).unwrap()
                 },
-                RIGHT => {
+                INCREASE => {
                     rprintln!("qdec_interrupt: RIGHT");
-                    set_led::spawn(RIGHT).unwrap()
+                    set_led::spawn(INCREASE).unwrap()
                 },
                 _ => {}
             }
@@ -138,23 +149,37 @@ mod app {
     fn set_led(cx: set_led::Context, value: i16) {
         let pwm = cx.local.pwm;
         let duty = *cx.local.duty;
-        let increasing = value == RIGHT;
 
-        match increasing {
-            true => {
+        match value {
+            INCREASE => {
                 if duty + DUTY_STEP <= DUTY_TURNAROUND {
                     pwm.set_duty_off(Channel::C0, duty + DUTY_STEP);
                     *cx.local.duty += DUTY_STEP;
                 }
             },
-            false => {
+            DECREASE => {
                 if duty >= DUTY_STEP {
                     pwm.set_duty_off(Channel::C0, duty - DUTY_STEP);
                     *cx.local.duty -= DUTY_STEP;
                 }
-            }
+            },
+            OFF => {
+                pwm.set_duty_off(Channel::C0, 0);
+                *cx.local.duty = 0;
+            },
+            _ => {}
         }
 
-        rprintln!("set_led: duty = {}", duty);
+        rprintln!("set_led: duty = {}", cx.local.duty);
+    }
+
+    #[task(binds = GPIOTE, local = [gpiote])]
+    fn gpiote_interrupt(cx: gpiote_interrupt::Context) {
+        rprintln!("gpiote_interrupt");
+        
+        let gpiote = cx.local.gpiote;
+        gpiote.channel0().reset_events();
+
+        set_led::spawn(OFF).unwrap();
     }
 }
