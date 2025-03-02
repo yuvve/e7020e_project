@@ -58,3 +58,4 @@
 - Simon:
   - Implemented reset button
   - Rotary encoder, interrupt handling and debouncing
+  - Rotary encoder, button press handling
