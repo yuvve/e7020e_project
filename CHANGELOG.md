@@ -54,3 +54,6 @@
 ## 26.02
 - Simon:
   - PWM dimmable LED working, set NFC pins (P0.09/10) to GPIO mode.
+## 2.03
+- Simon:
+  - Implemented reset button
