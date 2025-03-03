@@ -22,6 +22,9 @@ const MAX_DUTY: u16 = 1000;  // 1 kHz duty resolution
 const DUTY_STEP: u16 = 10;
 const TIMER_STEP_MS: u64 = 50;
 
+const RESET_PIN: u8 = 18;
+const RESET_PORT: bool = false; // Port 0
+
 #[rtic::app(device = nrf52833_hal::pac, dispatchers= [TIMER0])]
 mod app {
     use super::*;
@@ -39,9 +42,6 @@ mod app {
         pwm: PWM,
         duty: u16,
     }
-
-    const RESET_PIN: u8 = 18;
-    const RESET_PORT: bool = false; // Port 0
 
     #[init]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
