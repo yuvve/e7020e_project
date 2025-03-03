@@ -51,3 +51,16 @@
   - Debugging and some hand soldering (PCB #1)
 - Calle:
   - Debugging and some hand soldering (PCB #1)
+## 26.02
+- Simon:
+  - PWM dimmable LED working, set NFC pins (P0.09/10) to GPIO mode.
+ ## 28.02
+- Yuval:
+  - SMD soldering (PCB #2)
+- Simon:
+  - SMD soldering (PCB #2)
+## 2.03
+- Simon:
+  - Implemented reset button
+  - Rotary encoder, interrupt handling and debouncing
+  - Rotary encoder, button press handling
