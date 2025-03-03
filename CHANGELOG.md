@@ -65,3 +65,12 @@
   - Implemented reset button
   - Rotary encoder, interrupt handling and debouncing
   - Rotary encoder, button press handling
+## 03.03
+- Yuval:
+  - Rework (PCB #2)
+- Simon
+  - SMD soldering (PCB #3)
+- Calle
+  - SMD soldering (PCB #3)
+  - Rework (PCB #3)
+  - Finished hand soldering (PCB #3)
