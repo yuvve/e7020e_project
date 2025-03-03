@@ -1,4 +1,4 @@
-//! examples/rtic_blinky
+//! examples/led
 
 #![no_main]
 #![no_std]
@@ -50,10 +50,23 @@ mod app {
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
         let led: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::Low).degrade();
 
+        // Check if UICR is set correctly
+        let check_uicr_set = cx.device.UICR.nfcpins.read().protect().is_disabled();
+
         // Set NFC pins to normal GPIO
-        cx.device.NVMC.config.write(|w| w.wen().wen());
-        cx.device.UICR.nfcpins.write(|w| w.protect().disabled());
-        cx.device.NVMC.config.write(|w| w.wen().ren());
+        if !check_uicr_set {
+            cx.device.NVMC.config.write(|w| w.wen().wen());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+            
+            cx.device.UICR.nfcpins.write(|w| w.protect().disabled());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            cx.device.NVMC.config.write(|w| w.wen().ren());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            // Changes to UICR require a reset to take effect
+            cortex_m::peripheral::SCB::sys_reset();
+        }
 
         // PWM
         let pwm = Pwm::new(cx.device.PWM0);
