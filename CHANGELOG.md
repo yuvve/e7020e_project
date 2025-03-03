@@ -59,6 +59,7 @@
   - SMD soldering (PCB #2)
 - Simon:
   - SMD soldering (PCB #2)
+  - Finished hand soldering (PCB #1)
 ## 2.03
 - Simon:
   - Implemented reset button
