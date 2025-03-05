@@ -138,6 +138,7 @@
     "usbd",
     "usize",
     "watchpoints",
-    "zadig"
+    "zadig",
+    "VBUS",
   ],
 }
