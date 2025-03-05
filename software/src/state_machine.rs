@@ -38,7 +38,7 @@ impl StateMachine for State {
     fn next(&self, event: Event) -> State {
         match self {
             State::Idle => match event {
-                Event::Encoder(EncoderEvent::Pressed) => State::Settings(Settings::ClockHours),
+                Event::Encoder(EncoderEvent::Pressed) => State::Settings(Settings::ClockHours(0)),
                 Event::VBUSDisconnected => State::BackupBattery,
                 Event::AlarmDetected => State::Alarm,
                 _ => State::Idle,
