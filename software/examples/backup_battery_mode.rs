@@ -9,7 +9,7 @@ use {
     cortex_m::asm, 
     core::fmt::Write,
     nrf52833_hal as hal, 
-    rtt_target::{rprintln, rtt_init, UpChannel, ChannelMode},
+    rtt_target::{rtt_init, UpChannel, ChannelMode},
     panic_rtt_target as _, 
     systick_monotonic::*
 };
@@ -24,11 +24,14 @@ mod app {
     type MyMono = Systick<TIMER_HZ>;
 
     #[shared]
-    struct Shared {}
+    struct Shared {
+        counter: u32,
+    }
 
     #[local]
     struct Local {
         rtt_power: UpChannel,
+        rtt_trace: UpChannel,
         comp: hal::comp::Comp,
     }
 
@@ -41,9 +44,15 @@ mod app {
                     mode: ChannelMode::BlockIfFull,
                     name:"Power",
                 }
+                1 : {
+                    size: 128,
+                    mode: ChannelMode::BlockIfFull,
+                    name: "Trace",
+                }
             }
         );
-        writeln!(channels.up.0, "init").ok();
+        writeln!(channels.up.0, "Power RTT channel initialized!").ok();
+        writeln!(channels.up.1, "Trace RTT channel initialized!").ok();
 
 
         // Initialize the monotonic (core clock at 64 MHz)
@@ -53,32 +62,45 @@ mod app {
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
         let comp_pin = port0.p0_02.into_floating_input();
         let comp = hal::comp::Comp::new(cx.device.COMP, &comp_pin);
-        comp.enable_interrupt(hal::comp::Transition::Up);
-        comp.enable_interrupt(hal::comp::Transition::Down);
+        comp.vref(hal::comp::VRef::Vdd);
+        comp.power_mode(hal::comp::PowerMode::LowPower);
+        //comp.enable_interrupt(hal::comp::Transition::Up);
+        //comp.enable_interrupt(hal::comp::Transition::Down);
+        comp.enable_interrupt(hal::comp::Transition::Cross);
         comp.enable();
         
-        (Shared {}, Local {rtt_power: channels.up.0, comp: comp}, init::Monotonics(mono))
+        (Shared {counter: 0}, Local {rtt_power: channels.up.0, rtt_trace: channels.up.1, comp: comp}, init::Monotonics(mono))
     }
 
-    #[idle]
-    fn idle(_cx: idle::Context) -> ! {
-        rprintln!("idle");
+    #[idle(local = [rtt_trace], shared = [counter])]
+    fn idle(mut cx: idle::Context) -> ! {
+        writeln!(cx.local.rtt_trace, "Entering idle!").ok();
         loop {
+            let counter = cx.shared.counter.lock(|c| *c);
+            if counter > 0 {
+                writeln!(cx.local.rtt_trace, "Counter: {}", counter).ok();
+            }
             asm::wfi();
         }
     }
 
-    #[task(binds = COMP_LPCOMP, local = [rtt_power, comp])]
-    fn comp_lcomp(cx: comp_lcomp::Context) {
-        cx.local.rtt_power.write_str("comp_lcomp\n").ok();
+    #[task(binds = COMP_LPCOMP, local = [rtt_power, comp], shared = [counter])]
+    fn comp_lcomp(mut cx: comp_lcomp::Context) {
+        writeln!(cx.local.rtt_power, "Comparator interrupt!").ok();
+        cx.shared.counter.lock(|c| *c += 1);
+
         let comp = cx.local.comp;
         
         if comp.event_up().read().bits() != 0 {
-            writeln!(cx.local.rtt_power, "Upward crossing\n").ok();
+            writeln!(cx.local.rtt_power, "Upward crossing").ok();
         }
 
         if comp.event_down().read().bits() != 0 {
-            writeln!(cx.local.rtt_power, "Downward crossing\n").ok();
+            writeln!(cx.local.rtt_power, "Downward crossing").ok();
+        }
+
+        if comp.event_cross().read().bits() != 0 {
+            writeln!(cx.local.rtt_power, "Crossing").ok();
         }
     }
 }
