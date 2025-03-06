@@ -143,6 +143,64 @@
                     "svdFile": "./.vscode/nrf52833.svd",
                 }
             ]
+        }, 
+        {
+            "type": "probe-rs-debug",
+            "request": "launch",
+            "name": "main 52833 probe-rs Debug",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "cargo build 52833",
+            "connectUnderReset": false,
+            "chip": "nRF52833_xxAA",
+            "flashingConfig": {
+                "flashingEnabled": true,
+                "resetAfterFlashing": true,
+                "haltAfterReset": false,
+            },
+            "coreConfigs": [
+                {
+                    "coreIndex": 0,
+                    "programBinary": "./target/thumbv7em-none-eabihf/debug/seabreeze",
+                    "rttEnabled": true,
+                    "rttChannelFormats": [
+                        {
+                            "channelNumber": 0,
+                            "dataFormat": "String", // Format RTT data as String data
+                            "showTimestamps": false // Include host-side timestamps for every line of data transferred from the target RTT output
+                        },
+                    ],
+                    "svdFile": "./.vscode/nrf52833.svd"
+                }
+            ]
+        },        
+        {
+            "type": "probe-rs-debug",
+            "request": "launch",
+            "name": "main 52833 probe-rs Release",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "cargo build 52833 --release",
+            "connectUnderReset": false,
+            "chip": "nRF52833_xxAA",
+            "flashingConfig": {
+                "flashingEnabled": true,
+                "resetAfterFlashing": true,
+                "haltAfterReset": false,
+            },
+            "coreConfigs": [
+                {
+                    "coreIndex": 0,
+                    "programBinary": "./target/thumbv7em-none-eabihf/release/seabreeze",
+                    "rttEnabled": true,
+                    "rttChannelFormats": [
+                        {
+                            "channelNumber": 0,
+                            "dataFormat": "String", // Format RTT data as String data
+                            "showTimestamps": false // Include host-side timestamps for every line of data transferred from the target RTT output
+                        },
+                    ],
+                    "svdFile": "./.vscode/nrf52833.svd"
+                }
+            ]
         }
     ]
 }
