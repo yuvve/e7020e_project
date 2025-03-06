@@ -11,7 +11,9 @@ use {
     nrf52833_hal as hal, 
     rtt_target::{rtt_init, UpChannel, ChannelMode},
     panic_rtt_target as _, 
-    systick_monotonic::*
+    systick_monotonic::*,
+    hal::gpio::{Level, Output, Pin, PushPull}, 
+    embedded_hal::digital::v2::OutputPin,
 };
 
 const TIMER_HZ: u32 = 1000; // 1000 Hz (1 ms granularity)
@@ -25,14 +27,15 @@ mod app {
 
     #[shared]
     struct Shared {
-        counter: u32,
+        comp: hal::comp::Comp,
     }
 
     #[local]
     struct Local {
         rtt_power: UpChannel,
         rtt_trace: UpChannel,
-        comp: hal::comp::Comp,
+        //comp: hal::lpcomp::LpComp,
+        output: Pin<Output<PushPull>>,
     }
 
     #[init]
@@ -54,53 +57,68 @@ mod app {
         writeln!(channels.up.0, "Power RTT channel initialized!").ok();
         writeln!(channels.up.1, "Trace RTT channel initialized!").ok();
 
-
         // Initialize the monotonic (core clock at 64 MHz)
         let mono = Systick::new(cx.core.SYST, 64_000_000);
 
         // Init comparator
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
         let comp_pin = port0.p0_02.into_floating_input();
+
         let comp = hal::comp::Comp::new(cx.device.COMP, &comp_pin);
-        comp.vref(hal::comp::VRef::Vdd);
+        comp.vref(hal::comp::VRef::Int1V2);
         comp.power_mode(hal::comp::PowerMode::LowPower);
         //comp.enable_interrupt(hal::comp::Transition::Up);
         //comp.enable_interrupt(hal::comp::Transition::Down);
         comp.enable_interrupt(hal::comp::Transition::Cross);
+        comp.hysteresis(false);
         comp.enable();
+
+        //let comp = hal::lpcomp::LpComp::new(cx.device.LPCOMP, &comp_pin);
+        //comp.vref(hal::lpcomp::VRef::_4_8Vdd);
+        //comp.enable_interrupt(lpcomp::Transition::Cross);
+        //comp.enable();
+
+        let mut output: Pin<Output<PushPull>> = port0.p0_15.into_push_pull_output(Level::Low).degrade();
+        output.set_high().ok();
         
-        (Shared {counter: 0}, Local {rtt_power: channels.up.0, rtt_trace: channels.up.1, comp: comp}, init::Monotonics(mono))
+        (Shared {comp: comp}, Local {rtt_power: channels.up.0, rtt_trace: channels.up.1, output}, init::Monotonics(mono))
     }
 
-    #[idle(local = [rtt_trace], shared = [counter])]
+    #[idle(local = [rtt_trace], shared = [comp])]
     fn idle(mut cx: idle::Context) -> ! {
         writeln!(cx.local.rtt_trace, "Entering idle!").ok();
         loop {
-            let counter = cx.shared.counter.lock(|c| *c);
-            if counter > 0 {
-                writeln!(cx.local.rtt_trace, "Counter: {}", counter).ok();
-            }
+            let comp_read = cx.shared.comp.lock(|c| c.read());
+            writeln!(cx.local.rtt_trace, "Comp {:?}", comp_read).ok();
             asm::wfi();
         }
     }
 
-    #[task(binds = COMP_LPCOMP, local = [rtt_power, comp], shared = [counter])]
+    #[task(binds = COMP_LPCOMP, local = [rtt_power, output], shared = [comp], priority=5)]
     fn comp_lcomp(mut cx: comp_lcomp::Context) {
-        writeln!(cx.local.rtt_power, "Comparator interrupt!").ok();
-        cx.shared.counter.lock(|c| *c += 1);
+        let comp_read = cx.shared.comp.lock(|c| c.read());
 
-        let comp = cx.local.comp;
+        match comp_read {
+            hal::comp::CompResult::Above => {writeln!(cx.local.rtt_power, "Above").ok();}
+            hal::comp::CompResult::Below => {writeln!(cx.local.rtt_power, "Below").ok();}
+        }
         
-        if comp.event_up().read().bits() != 0 {
+        let (is_up, is_down, is_cross) = cx.shared.comp.lock(|c| {
+            (c.is_up(), c.is_down(), c.is_cross())
+        });
+
+        if is_up {
             writeln!(cx.local.rtt_power, "Upward crossing").ok();
         }
 
-        if comp.event_down().read().bits() != 0 {
+        if is_down {
             writeln!(cx.local.rtt_power, "Downward crossing").ok();
         }
 
-        if comp.event_cross().read().bits() != 0 {
+        if is_cross {
             writeln!(cx.local.rtt_power, "Crossing").ok();
         }
+
+        cx.shared.comp.lock(|c| c.reset_events());
     }
 }
