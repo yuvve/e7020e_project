@@ -1,4 +1,4 @@
-//! examples/backup_battery_mode.rs
+//! examples/backup_battery_mode_LPCOMP.rs
 
 #![no_main]
 #![no_std]
@@ -64,14 +64,6 @@ mod app {
         // Init comparator
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
         let comp_pin = port0.p0_02.into_floating_input();
-
-        //let comp = hal::comp::Comp::new(cx.device.COMP, &comp_pin);
-        //comp.vref(hal::comp::VRef::Vdd);
-        //comp.power_mode(hal::comp::PowerMode::LowPower);
-        //comp.hysteresis_threshold_down(90);
-        //comp.hysteresis_threshold_up(150);
-        //comp.enable_interrupt(hal::comp::Transition::Cross);
-        //comp.enable();
 
         let comp = hal::lpcomp::LpComp::new(cx.device.LPCOMP, &comp_pin);
         comp.vref(hal::lpcomp::VRef::_4_8Vdd);
