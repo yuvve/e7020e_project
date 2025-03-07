@@ -63,5 +63,34 @@
             ],
             "group": "build",
         },
+        {
+            "label": "cargo build 52833",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--no-default-features",
+                "--features",
+                "52833"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build",
+        },
+        {
+            "label": "cargo build 52833 --release",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--release",
+                "--no-default-features",
+                "--features",
+                "52833"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build",
+        }
     ]
 }
