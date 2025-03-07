@@ -3,9 +3,9 @@ Look at the CHANGELOG for each person's contributions.
 ## Minimal requirements
 - [ ] Real-time clock (RTC) based on 32kHz crystal
 - [ ] At least one function button
-- [ ] PWM modulated LED with transistor driver
+- [x] PWM modulated LED with transistor driver
 - [ ] Sound on alarm, e.g., buzzer
-- [ ] Analog input, e.g., temperature/supply voltage
+- [x] Analog input, e.g., temperature/supply voltage
 - [ ] Serial communication interface e.g., using dev-kit, Virtual Com Port (VCP)
 - [ ] Command Line Interface (CLI) for simple host interaction
 - [ ] Display that shows current time
@@ -16,8 +16,8 @@ Look at the CHANGELOG for each person's contributions.
 - [ ] Haptic actuator HW
 - [ ] Haptic actuator SW
 - [ ] Serial over USB
-- [ ] Backup battery HW
-- [ ] Backup battery SW
+- [x] Backup battery HW
+- [x] Backup battery SW
 - [ ] Rotary encoder HW
 - [ ] Fan HW
 - [ ] Fan SW
@@ -28,4 +28,4 @@ Look at the CHANGELOG for each person's contributions.
 - [ ] Speaker SW
 - [ ] Humidifier HW
 - [ ] Power optimization SW
-- [ ] Rotary encoder SW
+- [x] Rotary encoder SW
