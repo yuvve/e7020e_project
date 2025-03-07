@@ -73,7 +73,7 @@
 ## 26.02
 
 - Simon:
-  - PWM dimmable LED working, set NFC pins (P0.09/10) to GPIO mode.
+  - PWM dimmable LED example, set NFC pins (P0.09/10) to GPIO mode.
 
 ## 28.02
 
@@ -86,21 +86,23 @@
 ## 02.03
 
 - Simon:
-  - Implemented reset button
-  - Rotary encoder, interrupt handling and debouncing
-  - Rotary encoder, button press handling
+  - Reset button example
+  - Rotary encoder and switch example (including debouncing)
 
 ## 03.03
 
 - Yuval:
   - Rework (PCB #2)
+  - Case design (consultation)
 - Simon
   - SMD soldering (PCB #3)
+  - Case design (consultation)
 - Calle
   - SMD soldering (PCB #3)
   - Rework (PCB #3)
   - Finished hand soldering (PCB #3)
-
+  - Case design 
+  
 ## 04.03
 
 - Yuval:
@@ -115,3 +117,9 @@
 
 - Yuval:
   - Backup mode initial
+- Simon:
+  - Thermistor example
+
+## 07.03
+- Yuval:
+  - Backup mode working

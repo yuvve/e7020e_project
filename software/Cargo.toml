@@ -2,7 +2,7 @@
 authors = []
 edition = "2021"
 readme = "README.md"
-name = "app"
+name = "seabreeze"
 version = "0.1.0"
 
 [workspace]

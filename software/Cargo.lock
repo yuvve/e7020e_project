@@ -15,29 +15,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
- "cortex-m-rtic",
- "dwt-systick-monotonic",
- "embedded-graphics",
- "embedded-hal 0.2.7",
- "libm",
- "nb 1.1.0",
- "nrf52833-hal",
- "panic-halt",
- "panic-rtt-target",
- "rtt-target",
- "ssd1306",
- "systick-monotonic",
- "usb-device",
- "usbd-hid",
- "usbd-serial",
-]
-
-[[package]]
 name = "atomic-polyfill"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -729,6 +706,28 @@ name = "scopeguard"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
+
+[[package]]
+name = "seabreeze"
+version = "0.1.0"
+dependencies = [
+ "cortex-m",
+ "cortex-m-rt",
+ "cortex-m-rtic",
+ "dwt-systick-monotonic",
+ "embedded-graphics",
+ "embedded-hal 0.2.7",
+ "nb 1.1.0",
+ "nrf52833-hal",
+ "panic-halt",
+ "panic-rtt-target",
+ "rtt-target",
+ "ssd1306",
+ "systick-monotonic",
+ "usb-device",
+ "usbd-hid",
+ "usbd-serial",
+]
 
 [[package]]
 name = "semver"
