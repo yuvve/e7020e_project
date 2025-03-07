@@ -138,6 +138,12 @@
     "usbd",
     "usize",
     "watchpoints",
-    "zadig"
+    "zadig",
+    "nfcpins",
+    "NVMC",
+    "UICR",
+    "lcomp",
+    "LPCOMP",
+    "vref",
   ],
 }
