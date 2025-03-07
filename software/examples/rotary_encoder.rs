@@ -65,6 +65,11 @@ mod app {
             led: None,
         };
 
+        let qdec = Qdec::new(cx.device.QDEC, rotary_encoder_pins, SamplePeriod::_2048us);
+        qdec.enable_interrupt(NumSamples::_1smpl)
+            .debounce(true)
+            .enable();
+
         // Rotary encoder switch
         let rotary_switch = port0.p0_28.into_pullup_input().degrade();
         let gpiote = hal::gpiote::Gpiote::new(cx.device.GPIOTE);
@@ -72,15 +77,23 @@ mod app {
             .hi_to_lo()
             .enable_interrupt();
 
-        let qdec = Qdec::new(cx.device.QDEC, rotary_encoder_pins, SamplePeriod::_2048us);
-        qdec.enable_interrupt(NumSamples::_1smpl)
-            .debounce(true)
-            .enable();
+        // Check if UICR is set correctly
+        let check_uicr_set = cx.device.UICR.nfcpins.read().protect().is_disabled();
 
         // Set NFC pins to normal GPIO
-        cx.device.NVMC.config.write(|w| w.wen().wen());
-        cx.device.UICR.nfcpins.write(|w| w.protect().disabled());
-        cx.device.NVMC.config.write(|w| w.wen().ren());
+        if !check_uicr_set {
+            cx.device.NVMC.config.write(|w| w.wen().wen());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+            
+            cx.device.UICR.nfcpins.write(|w| w.protect().disabled());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            cx.device.NVMC.config.write(|w| w.wen().ren());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            // Changes to UICR require a reset to take effect
+            cortex_m::peripheral::SCB::sys_reset();
+        }
 
         // PWM
         let pwm = Pwm::new(cx.device.PWM0);
@@ -92,6 +105,7 @@ mod app {
         pwm.set_duty_off(Channel::C0, duty);    // start at 0% duty cycle
         pwm.enable();
 
+        // Enable cycle counter
         cx.core.DCB.enable_trace();
         cx.core.DWT.enable_cycle_counter();
 
