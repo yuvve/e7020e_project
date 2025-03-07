@@ -6,7 +6,7 @@ Look at the CHANGELOG for each person's contributions.
 - [x] PWM modulated LED with transistor driver
 - [ ] Sound on alarm, e.g., buzzer
 - [x] Analog input, e.g., temperature/supply voltage
-- [ ] Serial communication interface e.g., using dev-kit, Virtual Com Port (VCP)
+- [x] Serial communication interface e.g., using dev-kit, Virtual Com Port (VCP)
 - [ ] Command Line Interface (CLI) for simple host interaction
 - [ ] Display that shows current time
 
@@ -15,7 +15,7 @@ Look at the CHANGELOG for each person's contributions.
 - [ ] HW component optimization (fewer MOSFETS)
 - [ ] Haptic actuator HW
 - [ ] Haptic actuator SW
-- [ ] Serial over USB
+- [x] Serial over USB
 - [x] Backup battery HW
 - [x] Backup battery SW
 - [ ] Rotary encoder HW
