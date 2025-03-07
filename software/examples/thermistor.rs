@@ -3,13 +3,11 @@
 #![no_main]
 #![no_std]
 #![deny(unsafe_code)]
-//#![deny(warnings)]
+#![deny(warnings)]
 
 use {
     cortex_m::asm, 
-    hal::gpio::{Level, Output, Pin, PushPull, p0::P0_03, Disconnected}, 
-    hal::pwm::*,
-    hal::pac::PWM0,
+    hal::gpio::{p0::P0_03, Disconnected}, 
     hal::saadc::*,
 
     libm::logf,
@@ -19,12 +17,12 @@ use {
     systick_monotonic::*
 };
 
-const TIMER_HZ: u32 = 1000; // 1000 Hz (1 ms granularity)
-const B: f32 = 3950.0;  // From the datasheet
-const R_25: f32 = 10000.0;
-const T_25: f32 = 298.15; // 25 C in Kelvin
-const VDD: f32 = 2.9; // Measure the actual value of VDD
-const ADC_MAX: f32 = 4095.0;
+const TIMER_HZ: u32 = 1000;     // 1000 Hz (1 ms granularity)
+const B: f32 = 3950.0;          // From the datasheet
+const R_25: f32 = 10000.0;      // 10k Ohm at 25 C
+const T_25: f32 = 298.15;       // 25 C in Kelvin
+const VDD: f32 = 2.8;           // Measured VDD
+const ADC_MAX: f32 = 4095.0;    // 12-bit ADC max value
 
 #[rtic::app(device = nrf52833_hal::pac, dispatchers= [TIMER0])]
 mod app {
