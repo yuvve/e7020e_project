@@ -118,4 +118,8 @@
 - Yuval:
   - Backup mode initial
 - Simon:
-  - Thermistor example 
+  - Thermistor example
+
+## 07.03
+- Yuval:
+  - Backup mode working
