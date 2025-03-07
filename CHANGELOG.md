@@ -123,3 +123,4 @@
 ## 07.03
 - Yuval:
   - Backup mode working
+  - Serial over USB
