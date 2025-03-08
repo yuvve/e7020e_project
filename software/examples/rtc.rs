@@ -3,7 +3,7 @@
 #![no_main]
 #![no_std]
 #![deny(unsafe_code)]
-//#![deny(warnings)]
+#![deny(warnings)]
 
 use {
     cortex_m::asm, 
