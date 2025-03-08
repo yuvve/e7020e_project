@@ -124,3 +124,5 @@
 - Yuval:
   - Backup mode working
   - Serial over USB
+- Simon:
+  - RTC timer and alarm
