@@ -15,7 +15,7 @@ use {
     core::sync::atomic::{AtomicBool, AtomicU32, Ordering},
 };
 
-const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency
+const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency, max prescaler value
 const TICKS_PER_MINUTE: u32 = 8; // Interrupt every second for demonstration purpose, will be 8*60 in production
 const TICKS_PER_DAY: u32 = TICKS_PER_MINUTE * 60 * 24;
 const MAX_TICKS: u32 = 16_777_216; // 24 bit max value for RTC counter
@@ -101,7 +101,7 @@ mod app {
             if rtc.is_event_triggered(RtcInterrupt::Overflow) {
                 rtc.reset_event(RtcInterrupt::Overflow);
 
-                // Update the time offset to current time, adjust for overflow
+                // Update the time offset to current time, adjusting for overflow
                 let time_offset_ticks = cx.shared.time_offset_ticks.load(Ordering::Relaxed);
                 let new_offset = (MAX_TICKS + time_offset_ticks) % TICKS_PER_DAY;
                 cx.shared.time_offset_ticks.store(new_offset, Ordering::Relaxed);
@@ -137,9 +137,10 @@ mod app {
             alarm_ticks - current_time + counter
         };
 
+        // Modulo MAX_TICKS, adjusting for RTC counter overflow
+        let next_interrupt = next_alarm_ticks % MAX_TICKS;
         cx.shared.rtc.lock(|rtc| {
-            // Modulo MAX_TICKS to handle overflow
-            rtc.set_compare(RtcCompareReg::Compare1, next_alarm_ticks % MAX_TICKS).ok();
+            rtc.set_compare(RtcCompareReg::Compare1, next_interrupt).ok();
             rtc.enable_interrupt(RtcInterrupt::Compare1, None);
         });
         cx.shared.alarm_offset_ticks.store(alarm_ticks, Ordering::Relaxed);
