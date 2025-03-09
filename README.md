@@ -20,7 +20,7 @@ The Sea Breeze Clock provides ultimate comfort for deep sleepers. Featuring a bu
 - Fan for (hamster sized) sea breeze effect
 - USB MINI connection
 - Haptic actuator for SUPER GENTLE WAKE
-- Hard(ish) protective case for the board
+- Hard(ish) protective case for the boardCost
 
 ## Functionality and SW features
 

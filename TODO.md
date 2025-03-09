@@ -12,20 +12,20 @@ Look at the CHANGELOG for each person's contributions.
 
 ## Extra Grade 4
 - [ ] Humidifier SW
-- [ ] HW component optimization (fewer MOSFETS)
-- [ ] Haptic actuator HW
+- [x] HW component optimization (fewer MOSFETS)
+- [x] Haptic actuator HW
 - [ ] Haptic actuator SW
 - [x] Serial over USB
 - [x] Backup battery HW
 - [x] Backup battery SW
-- [ ] Rotary encoder HW
-- [ ] Fan HW
-- [ ] Fan SW
+- [x] Rotary encoder HW
+- [x] Fan HW
+- [x] Fan SW
 - [ ] Temperature on display SW
 
 ## Extra Grade 5
-- [ ] Speaker HW
+- [x] Speaker HW
 - [ ] Speaker SW
-- [ ] Humidifier HW
+- [x] Humidifier HW
 - [ ] Power optimization SW
 - [x] Rotary encoder SW
