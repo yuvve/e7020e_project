@@ -121,8 +121,14 @@
   - Thermistor example
 
 ## 07.03
+
 - Yuval:
   - Backup mode working
   - Serial over USB
 - Simon:
   - RTC timer and alarm
+
+## 09.03
+
+- Calle:
+  - Finshed Fan_SW
