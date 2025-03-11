@@ -9,6 +9,7 @@ version = "0.1.0"
 
 
 [dependencies]
+heapless = "0.7.16"
 cortex-m = { version = "0.7.4", features = [
     "inline-asm",
     "critical-section-single-core",
