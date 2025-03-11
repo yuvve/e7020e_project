@@ -72,37 +72,54 @@ mod app {
 
     #[task(shared = [display, time, temp])]
     fn update_display(mut cx: update_display::Context) {
-        let style = MonoTextStyle::new(&FONT_10X20, BinaryColor::On);
+        let style = &MonoTextStyle::new(&FONT_10X20, BinaryColor::On);
+
+        let current_time = update_time(&mut cx.shared.time);
+
+        let time_str = format_time(current_time);
+        // Logic needed for temperature to update  
+        let temp_str = "20C";
 
         cx.shared.display.lock(|disp| {
             disp.clear(BinaryColor::Off).unwrap();
 
-            // Update clock, current_time needs logic to be able to be correct
-            let current_time = cx.shared.time.lock(|t| {
-                *t += 1;
-                *t
-            });
-            // Also there is no logic for the clock to actually go back to 00:00 after 23:59
-
-            let hours = (current_time / 3600) % 24;
-            let minutes = (current_time / 60) % 60;
-            let seconds = current_time % 60;
-
-            let mut time_str: String<10> = String::new();
-            core::write!(&mut time_str, "{:02}:{:02}:{:02}", hours, minutes, seconds).unwrap();
-
-            Text::new(&time_str, Point::new(24, 20), style)
-                .draw(disp)
-                .unwrap();
-
-            // Logic needed for temperature to update  
-            Text::new("20C", Point::new(50, 50), style)
-                .draw(disp)
-                .unwrap();
+            draw_clock(disp, &time_str, style);
+            draw_temperature(disp, &temp_str, style);
             // Problem with adding ° because embedded_graphics for some reason only supports ascii light and not utf-8 or extended
+
             disp.flush().unwrap();
         });
 
         update_display::spawn_after(DISPLAY_UPDATE_MS.millis()).unwrap();
+    }
+
+    // Update clock, current_time needs logic to be able to be correct
+    fn update_time(time: &mut impl rtic::Mutex<T = u32>) -> u32 {
+        time.lock(|t| {
+            *t += 1;
+            *t
+        })
+        // Also there is no logic for the clock to actually go back to 00:00 after 23:59
+    }
+
+    fn format_time(seconds: u32) -> String<10> {
+        let hours = (seconds / 3600) % 24;
+        let minutes = (seconds / 60) % 60;
+        let seconds = seconds % 60;
+        let mut time_str: String<10> = String::new();
+        core::write!(&mut time_str, "{:02}:{:02}:{:02}", hours, minutes, seconds).unwrap();
+        time_str
+    }
+
+    fn draw_clock(disp: &mut Ssd1306<I2CInterface<Twim<pac::TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, time_str: &str, style: &MonoTextStyle<BinaryColor>) {
+        Text::new(time_str, Point::new(24, 20), *style)
+            .draw(disp)
+            .unwrap();
+    }
+
+    fn draw_temperature(disp: &mut Ssd1306<I2CInterface<Twim<pac::TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, temp_str: &str, style: &MonoTextStyle<BinaryColor>) {
+        Text::new(temp_str, Point::new(50, 50), *style)
+            .draw(disp)
+            .unwrap();
     }
 }
