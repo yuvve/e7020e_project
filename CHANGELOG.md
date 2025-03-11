@@ -121,8 +121,14 @@
   - Thermistor example
 
 ## 07.03
+
 - Yuval:
   - Backup mode working
   - Serial over USB
 - Simon:
   - RTC timer and alarm
+
+## 11.03
+
+- Calle:
+  - Got the display to show what we want, but it does not correctly display the current time or temperature.
