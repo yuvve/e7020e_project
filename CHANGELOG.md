@@ -128,6 +128,11 @@
 - Simon:
   - RTC timer and alarm
 
+## 09.03
+
+- Calle:
+  - Finshed Fan_SW
+
 ## 11.03
 
 - Calle:
