@@ -132,3 +132,8 @@
 
 - Calle:
   - Finshed Fan_SW
+
+## 11.03
+
+- Calle:
+  - Got the display to show what we want, but it does not correctly display the current time or temperature.
