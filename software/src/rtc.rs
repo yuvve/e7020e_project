@@ -1,6 +1,10 @@
 use {
-    core::sync::atomic::{AtomicU32, Ordering}, hal::{pac::RTC0, rtc::*}, nrf52833_hal as hal, 
-    rtic::Mutex
+    core::sync::atomic::{AtomicU32, Ordering}, 
+    hal::{pac::RTC0, rtc::*}, 
+    nrf52833_hal as hal, 
+    rtic::Mutex,
+    crate::app::*,
+    crate::state_machine::*,
 };
 
 const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency, max prescaler value
@@ -31,6 +35,31 @@ pub(crate) fn ticks_to_time(ticks: u32) -> (u8, u8) {
     let minute = (minutes % 60) as u8;
 
     (hour as u8, minute as u8)
+}
+
+pub(crate) fn rtc_interrupt(mut cx: __rtic_internal_rtc_interruptSharedResources) {
+    cx.rtc.lock(|rtc| {
+        // Need to check which interrupt has been triggered
+        // multiple interrupts can be triggered at the same time
+
+        // Compare 0: Periodic interrupt every minute
+        if rtc.is_event_triggered(RtcInterrupt::Compare0) {
+            let counter = rtc.get_counter();
+            periodic_interrupt(rtc, counter);
+
+            state_machine::spawn(Event::TimerEvent(TimerEvent::PeriodicUpdate), counter).ok();
+        } 
+        // Compare 1: Alarm interrupt
+        if rtc.is_event_triggered(RtcInterrupt::Compare1) {
+            alarm_interrupt(rtc);
+
+            state_machine::spawn(Event::TimerEvent(TimerEvent::AlarmTriggered), 0).ok();
+        }
+        // Overflow: RTC counter has reached its maximum value
+        if rtc.is_event_triggered(RtcInterrupt::Overflow) {
+            overflow_interrupt(rtc, cx.time_offset_ticks);
+        };
+    });
 }
 
 pub(crate) fn periodic_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, counter: u32) {
