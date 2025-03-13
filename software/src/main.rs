@@ -132,25 +132,13 @@ mod app {
     }
 
     #[task(priority = 1, shared = [rtc, &time_offset_ticks])]
-    fn set_time(mut cx: set_time::Context, hour: u8, minute: u8) {
-        let time_offset_ticks = rtc::time_to_ticks(hour, minute);
-
-        // Reset RTC counter, set the time offset
-        cx.shared.rtc.lock(|rtc| {
-            rtc.clear_counter();
-        });
-        cx.shared.time_offset_ticks.store(time_offset_ticks, Ordering::Relaxed);
+    fn set_time(cx: set_time::Context, hour: u8, minute: u8) {
+        rtc::set_time(cx.shared, hour, minute);
     }
 
     #[task(priority = 1, shared = [rtc, &alarm_offset_ticks, &time_offset_ticks])]
-    fn set_alarm(mut cx: set_alarm::Context, hour: u8, minute: u8) {
-        let alarm_ticks = rtc::time_to_ticks(hour, minute);
-        let counter = cx.shared.rtc.lock(|rtc| rtc.get_counter());
-        
-        let next_interrupt = rtc::next_alarm_ticks(counter, cx.shared.time_offset_ticks.load(Ordering::Relaxed), alarm_ticks);
-        cx.shared.rtc.lock(|rtc| {
-            rtc::set_alarm_interrupt(rtc, next_interrupt, cx.shared.alarm_offset_ticks);
-        });
+    fn set_alarm(cx: set_alarm::Context, hour: u8, minute: u8) {
+        rtc::set_alarm(cx.shared, hour, minute);
     }
 
     #[task(priority = 3, shared = [&time_offset_ticks])]

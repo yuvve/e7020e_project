@@ -1,5 +1,6 @@
 use {
-    core::sync::atomic::{AtomicU32, Ordering}, hal::{pac::RTC0, rtc::*}, nrf52833_hal as hal 
+    core::sync::atomic::{AtomicU32, Ordering}, hal::{pac::RTC0, rtc::*}, nrf52833_hal as hal, 
+    rtic::Mutex
 };
 
 const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency, max prescaler value
@@ -54,10 +55,24 @@ pub(crate) fn overflow_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, time_offset: &At
     new_offset
 }
 
-pub(crate) fn set_alarm_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, alarm_offset_ticks: u32, alarm_offset: &AtomicU32) {
-    rtc.set_compare(RtcCompareReg::Compare1, alarm_offset_ticks).unwrap();
-    rtc.enable_interrupt(RtcInterrupt::Compare1, None);
-    alarm_offset.store(alarm_offset_ticks, Ordering::Relaxed);
+pub(crate) fn set_alarm(mut cx: crate::app::__rtic_internal_set_alarmSharedResources, hour: u8, minute: u8) {
+    let alarm_ticks = time_to_ticks(hour, minute);
+    let counter = cx.rtc.lock(|rtc| rtc.get_counter());
+    
+    let next_interrupt = next_alarm_ticks(counter, cx.time_offset_ticks.load(Ordering::Relaxed), alarm_ticks);
+    cx.rtc.lock(|rtc| {
+        rtc.set_compare(RtcCompareReg::Compare1, next_interrupt).unwrap();
+        rtc.enable_interrupt(RtcInterrupt::Compare1, None);
+    });
+    cx.alarm_offset_ticks.store(alarm_ticks, Ordering::Relaxed);
+}
+
+pub(crate) fn set_time(mut cx: crate::app::__rtic_internal_set_timeSharedResources, hour: u8, minute: u8) {
+    let time_offset_ticks = time_to_ticks(hour, minute);
+    cx.rtc.lock(|rtc| {
+        rtc.clear_counter();
+    });
+    cx.time_offset_ticks.store(time_offset_ticks, Ordering::Relaxed);
 }
 
 pub(crate) fn next_alarm_ticks(counter: u32, time_offset_ticks: u32, alarm_offset_ticks: u32) -> u32 {
