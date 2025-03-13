@@ -106,29 +106,8 @@ mod app {
     }
 
     #[task(binds = RTC0, priority = 5, shared = [rtc, &time_offset_ticks])]
-    fn rtc_interrupt(mut cx: rtc_interrupt::Context) {
-        cx.shared.rtc.lock(|rtc| {
-            // Need to check which interrupt has been triggered
-            // multiple interrupts can be triggered at the same time
-
-            // Compare 0: Periodic interrupt every minute
-            if rtc.is_event_triggered(RtcInterrupt::Compare0) {
-                let counter = rtc.get_counter();
-                rtc::periodic_interrupt(rtc, counter);
-
-                state_machine::spawn(Event::TimerEvent(TimerEvent::PeriodicUpdate), counter).ok();
-            } 
-            // Compare 1: Alarm interrupt
-            if rtc.is_event_triggered(RtcInterrupt::Compare1) {
-                rtc::alarm_interrupt(rtc);
-
-                state_machine::spawn(Event::TimerEvent(TimerEvent::AlarmTriggered), 0).ok();
-            }
-            // Overflow: RTC counter has reached its maximum value
-            if rtc.is_event_triggered(RtcInterrupt::Overflow) {
-                rtc::overflow_interrupt(rtc, cx.shared.time_offset_ticks);
-            };
-        });
+    fn rtc_interrupt(cx: rtc_interrupt::Context) {
+        rtc::rtc_interrupt(cx.shared);
     }
 
     #[task(priority = 1, shared = [rtc, &time_offset_ticks])]
