@@ -14,7 +14,7 @@ Look at the CHANGELOG for each person's contributions.
 - [x] Humidifier SW
 - [x] HW component optimization (fewer MOSFETS)
 - [x] Haptic actuator HW
-- [ ] Haptic actuator SW
+- [X] Haptic actuator SW
 - [x] Serial over USB
 - [x] Backup battery HW
 - [x] Backup battery SW

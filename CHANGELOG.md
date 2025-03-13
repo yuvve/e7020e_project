@@ -137,3 +137,8 @@
 
 - Calle:
   - Got the display to show what we want, but it does not correctly display the current time or temperature.
+
+## 13.03
+
+- Yuval:
+  - Haptic actuator example
