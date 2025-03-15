@@ -22,6 +22,26 @@ pub(crate) fn init(rtc: RTC0) -> Rtc<hal::pac::RTC0> {
     rtc
 }
 
+pub(crate) fn set_alarm(mut cx: __rtic_internal_set_alarm_Context, hour: u8, minute: u8) {
+    let alarm_ticks = time_to_ticks(hour, minute);
+    let counter = cx.shared.rtc.lock(|rtc| rtc.get_counter());
+    
+    let next_interrupt = next_alarm_ticks(counter, cx.shared.time_offset_ticks.load(Ordering::Relaxed), alarm_ticks);
+    cx.shared.rtc.lock(|rtc| {
+        rtc.set_compare(RtcCompareReg::Compare1, next_interrupt).unwrap();
+        rtc.enable_interrupt(RtcInterrupt::Compare1, None);
+    });
+    cx.shared.alarm_offset_ticks.store(alarm_ticks, Ordering::Relaxed);
+}
+
+pub(crate) fn set_time(mut cx: crate::app::__rtic_internal_set_time_Context, hour: u8, minute: u8) {
+    let time_offset_ticks = time_to_ticks(hour, minute);
+    cx.shared.rtc.lock(|rtc| {
+        rtc.clear_counter();
+    });
+    cx.shared.time_offset_ticks.store(time_offset_ticks, Ordering::Relaxed);
+}
+
 pub(crate) fn time_to_ticks(hour: u8, minute: u8) -> u32 {
     let minutes = (hour as u32) * 60 + (minute as u32);
     let time_offset_ticks = minutes * TICKS_PER_MINUTE;
@@ -37,8 +57,8 @@ pub(crate) fn ticks_to_time(ticks: u32) -> (u8, u8) {
     (hour as u8, minute as u8)
 }
 
-pub(crate) fn rtc_interrupt(mut cx: __rtic_internal_rtc_interruptSharedResources) {
-    cx.rtc.lock(|rtc| {
+pub(crate) fn handle_interrupt(mut cx: __rtic_internal_rtc_interrupt_Context) {
+    cx.shared.rtc.lock(|rtc| {
         // Need to check which interrupt has been triggered
         // multiple interrupts can be triggered at the same time
 
@@ -57,23 +77,23 @@ pub(crate) fn rtc_interrupt(mut cx: __rtic_internal_rtc_interruptSharedResources
         }
         // Overflow: RTC counter has reached its maximum value
         if rtc.is_event_triggered(RtcInterrupt::Overflow) {
-            overflow_interrupt(rtc, cx.time_offset_ticks);
+            overflow_interrupt(rtc, cx.shared.time_offset_ticks);
         };
     });
 }
 
-pub(crate) fn periodic_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, counter: u32) {
+fn periodic_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, counter: u32) {
     rtc.reset_event(RtcInterrupt::Compare0);
 
     let next_interrupt = (counter + TICKS_PER_MINUTE) % MAX_TICKS;
     rtc.set_compare(RtcCompareReg::Compare0, next_interrupt).ok();
 }
 
-pub(crate) fn alarm_interrupt(rtc: &mut Rtc<hal::pac::RTC0>) {
+fn alarm_interrupt(rtc: &mut Rtc<hal::pac::RTC0>) {
     rtc.reset_event(RtcInterrupt::Compare1);
 }
 
-pub(crate) fn overflow_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, time_offset: &AtomicU32) -> u32 {
+fn overflow_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, time_offset: &AtomicU32) -> u32 {
     rtc.reset_event(RtcInterrupt::Overflow);
 
     let time_offset_ticks = time_offset.load(Ordering::Relaxed);
@@ -84,27 +104,7 @@ pub(crate) fn overflow_interrupt(rtc: &mut Rtc<hal::pac::RTC0>, time_offset: &At
     new_offset
 }
 
-pub(crate) fn set_alarm(mut cx: crate::app::__rtic_internal_set_alarmSharedResources, hour: u8, minute: u8) {
-    let alarm_ticks = time_to_ticks(hour, minute);
-    let counter = cx.rtc.lock(|rtc| rtc.get_counter());
-    
-    let next_interrupt = next_alarm_ticks(counter, cx.time_offset_ticks.load(Ordering::Relaxed), alarm_ticks);
-    cx.rtc.lock(|rtc| {
-        rtc.set_compare(RtcCompareReg::Compare1, next_interrupt).unwrap();
-        rtc.enable_interrupt(RtcInterrupt::Compare1, None);
-    });
-    cx.alarm_offset_ticks.store(alarm_ticks, Ordering::Relaxed);
-}
-
-pub(crate) fn set_time(mut cx: crate::app::__rtic_internal_set_timeSharedResources, hour: u8, minute: u8) {
-    let time_offset_ticks = time_to_ticks(hour, minute);
-    cx.rtc.lock(|rtc| {
-        rtc.clear_counter();
-    });
-    cx.time_offset_ticks.store(time_offset_ticks, Ordering::Relaxed);
-}
-
-pub(crate) fn next_alarm_ticks(counter: u32, time_offset_ticks: u32, alarm_offset_ticks: u32) -> u32 {
+fn next_alarm_ticks(counter: u32, time_offset_ticks: u32, alarm_offset_ticks: u32) -> u32 {
     let current_time = (counter + time_offset_ticks ) % TICKS_PER_DAY;
     let next_alarm_ticks = if current_time > alarm_offset_ticks {
         // Alarm time has already passed today, set it for tomorrow
