@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum State {
     Idle,
     Alarm,
@@ -8,34 +8,35 @@ pub enum State {
     BackupBattery,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Settings {
-    ClockHours(usize),
-    ClockMinutes(usize),
-    AlarmHours(usize),
-    AlarmMinutes(usize),
+    ClockHours,
+    ClockMinutes,
+    AlarmHours,
+    AlarmMinutes,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Event {
     Encoder(EncoderEvent),
     ResetButton,
-    TimerEvent(TimerEvent),
+    Timer(TimerEvent),
     VBUSDisconnected,
     VBUSConnected,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum TimerEvent {
-    PeriodicUpdate,
+    PeriodicUpdate(u32),  // Counter value
     AlarmTriggered,
     Timeout,    // General timeout used for timing out settings/alarm
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum EncoderEvent {
-    Rotated(usize),
-    Pressed,
+    Rotated(isize),
+    ShortPressed,
+    LongPressed,
 }
 
 pub trait StateMachine {
@@ -46,39 +47,41 @@ impl StateMachine for State {
     fn next(&self, event: Event) -> State {
         match self {
             State::Idle => match event {
-                Event::Encoder(EncoderEvent::Pressed) => State::Settings(Settings::ClockHours(0)),
+                Event::Encoder(EncoderEvent::ShortPressed) => State::Settings(Settings::AlarmHours),
+                Event::Encoder(EncoderEvent::LongPressed) => State::Settings(Settings::ClockHours),
                 Event::VBUSDisconnected => State::BackupBattery,
-                Event::TimerEvent(TimerEvent::AlarmTriggered) => State::Alarm,
-                Event::TimerEvent(TimerEvent::PeriodicUpdate) => State::Idle,
+                Event::Timer(TimerEvent::AlarmTriggered) => State::Alarm,
+                Event::Timer(TimerEvent::PeriodicUpdate(_)) => State::Idle,
                 _ => State::Idle,
             }
 
             State::Alarm => match event {
                 Event::Encoder(encoder_event) => {
                     match encoder_event {
-                        EncoderEvent::Pressed => State::Idle,
+                        EncoderEvent::ShortPressed => State::Idle,
+                        EncoderEvent::LongPressed => State::Idle,
                         _ => State::Alarm,
                     }
                 }
-                Event::TimerEvent(TimerEvent::PeriodicUpdate) => State::Alarm,
-                Event::TimerEvent(TimerEvent::Timeout) => State::Idle,
+                Event::Timer(TimerEvent::PeriodicUpdate(_)) => State::Alarm,
+                Event::Timer(TimerEvent::Timeout) => State::Idle,
                 _ => State::Alarm,
             }
 
             State::Settings(settings) => match event {
-                Event::Encoder(EncoderEvent::Rotated(steps)) => match settings {
-                    Settings::ClockHours(_) => State::Settings(Settings::ClockHours(steps)),
-                    Settings::ClockMinutes(_) => State::Settings(Settings::ClockMinutes(steps)),
-                    Settings::AlarmHours(_) => State::Settings(Settings::AlarmHours(steps)),
-                    Settings::AlarmMinutes(_) => State::Settings(Settings::AlarmMinutes(steps)),
+                Event::Encoder(EncoderEvent::Rotated(_)) => match settings {
+                    Settings::ClockHours => State::Settings(Settings::ClockHours),
+                    Settings::ClockMinutes => State::Settings(Settings::ClockMinutes),
+                    Settings::AlarmHours => State::Settings(Settings::AlarmHours),
+                    Settings::AlarmMinutes => State::Settings(Settings::AlarmMinutes),
                 }
-                Event::Encoder(EncoderEvent::Pressed) => match settings {
-                    Settings::ClockHours(_) => State::Settings(Settings::ClockMinutes(0)),
-                    Settings::ClockMinutes(_) => State::Settings(Settings::AlarmHours(0)),
-                    Settings::AlarmHours(_) => State::Settings(Settings::AlarmMinutes(0)),
-                    Settings::AlarmMinutes(_) => State::Idle,
+                Event::Encoder(EncoderEvent::ShortPressed) => match settings {
+                    Settings::ClockHours => State::Settings(Settings::ClockMinutes),
+                    Settings::ClockMinutes => State::Idle,
+                    Settings::AlarmHours => State::Settings(Settings::AlarmMinutes),
+                    Settings::AlarmMinutes => State::Idle,
                 }
-                Event::TimerEvent(TimerEvent::Timeout) => State::Idle,
+                Event::Timer(TimerEvent::Timeout) => State::Idle,
                 _ => State::Settings(*settings),
             }
 

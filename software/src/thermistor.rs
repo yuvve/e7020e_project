@@ -3,13 +3,14 @@ const R_25: f32 = 10000.0;      // 10k Ohm at 25 C
 const T_25: f32 = 298.15;       // 25 C in Kelvin
 const VDD: f32 = 2.8;           // Measured VDD
 const ADC_MAX: f32 = 4095.0;    // 12-bit ADC max value
+pub const RESET_PIN: u8 = 18;
+pub const RESET_PORT: bool = false; // Port 0
 
 use {
-    hal::saadc::*, 
-    libm::logf,
-    nrf52833_hal::{self as hal}, 
     crate::app::*,
-
+    hal::saadc::*, 
+    nrf52833_hal::{self as hal}, 
+    libm::logf,
     rtic::Mutex,
 };
 
