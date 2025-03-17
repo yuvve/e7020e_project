@@ -9,10 +9,10 @@ mod thermistor;
 mod rotary_encoder;
 mod uicr;
 mod pwm;
-
+mod display;
 
 use {
-    crate::state_machine::*,
+    crate::{state_machine::*, display::Display, pwm::Pwm0},
     core::sync::atomic::{AtomicU32, Ordering},
     cortex_m::asm, 
     hal::{
@@ -21,8 +21,6 @@ use {
         qdec::*,
         gpiote::*,
         gpio::{Level, p0::P0_03, Disconnected, Output, Pin, PushPull},
-        pwm::*,
-        pac::PWM0,
     },
     nrf52833_hal as hal, 
     panic_rtt_target as _, 
@@ -37,13 +35,14 @@ mod app {
 
     #[shared]
     struct Shared {
-        rtc: Rtc<hal::pac::RTC0>,
+        rtc: Rtc<hal::pac::RTC1>,
         time_offset_ticks: AtomicU32,   // Time offset in ticks from 00:00
         alarm_offset_ticks: AtomicU32,  // Alarm offset in ticks from 00:00
-        current_ticks: AtomicU32, // Temporary offset for settings
+        current_ticks: AtomicU32,       // Temporary offset for settings
         temperature: f32,
         #[lock_free]
-        pwm: Option<PwmSeq<PWM0, SeqBuffer, SeqBuffer>>
+        pwm: Pwm0,
+        display: Display,
         }
 
     #[local]
@@ -54,17 +53,18 @@ mod app {
         qdec: Qdec,
         gpiote:Gpiote,
     }
-    type SeqBuffer = &'static mut [u16; 100];
 
     #[init(local = [ 
-        BUF0: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
-        BUF1: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
+        SEQBUF0: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
+        SEQBUF1: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
     ])]
     fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
         rtt_init_print!();
-        let BUF0 = cx.local.BUF0;
-        let BUF1 = cx.local.BUF1;
+        let SEQBUF0 = cx.local.SEQBUF0;
+        let SEQBUF1 = cx.local.SEQBUF1;
+
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
+        let port1 = hal::gpio::p1::Parts::new(cx.device.P1);
         
         // Enable cycle counter
         cx.core.DCB.enable_trace();
@@ -85,7 +85,7 @@ mod app {
         let pwm = pwm::init(pwm, led_pin, amp_fan_hum_pin, haptic_pin);
 
         // Initialize the RTC peripheral
-        let rtc = rtc::init(cx.device.RTC0);
+        let rtc = rtc::init(cx.device.RTC1);
 
         // Initialize the rotary encoder and switch
         let rotation_pins = hal::qdec::Pins {
@@ -97,6 +97,12 @@ mod app {
         let (qdec, gpiote) = rotary_encoder::init(
             cx.device.QDEC, cx.device.GPIOTE, rotation_pins, switch_pin);
 
+        // Initialize the OLED display
+        let scl_pin = port0.p0_11.into_floating_input().degrade();
+        let sda_pin = port1.p1_09.into_floating_input().degrade();
+        let twim_pins = hal::twim::Pins { scl: scl_pin, sda: sda_pin };
+        let display = display::init(cx.device.TWIM0, twim_pins);
+        
         // Initialize the thermistor, read initial temp
         let saadc = thermistor::init(cx.device.SAADC);
         let saadc_pin = port0.p0_03;
@@ -105,20 +111,21 @@ mod app {
         // Simulate user setting the time
         let time_ticks = rtc::time_to_ticks(06, 20);
         set_time::spawn(time_ticks).ok();
+        update_display::spawn(time_ticks, display::Section::Display, false).ok();
 
         // Simulate user setting the alarm, 
         let alarm_ticks = rtc::time_to_ticks(06, 25);
         set_alarm::spawn(alarm_ticks).ok();
 
         let state_machine = State::Idle;
-
         (Shared {
             rtc,
             time_offset_ticks: AtomicU32::new(0),
             alarm_offset_ticks: AtomicU32::new(0),
-            current_ticks: AtomicU32::new(0),
+            current_ticks: AtomicU32::new(time_ticks),
             temperature: 0.0,
-            pwm: pwm.load(Some(BUF0), Some(BUF1), false).ok(),
+            pwm: pwm.load(Some(SEQBUF0), Some(SEQBUF1), false).ok(),
+            display,
         }, Local {
             state_machine,
             saadc,
@@ -138,58 +145,94 @@ mod app {
 
     #[task(priority = 4, capacity = 10, local = [state_machine, current_ticks: u32 = 0, temp_ticks: u32 = 0], shared = [&time_offset_ticks, &current_ticks, &alarm_offset_ticks, temperature])]
     fn state_machine(cx: state_machine::Context, event: Event) {
-        let state_machine = *cx.local.state_machine;
-        let next_state = state_machine.next(event);
+        let state = *cx.local.state_machine;
+        let next_state = state.next(event);
         *cx.local.state_machine = next_state;
-        rprintln!("State: {:?}, Event: {:?} -> State: {:?}", state_machine, event, next_state);
+        //rprintln!("State: {:?}, Event: {:?} -> State: {:?}", state, event, next_state);
 
         match event{
             Event::Timer(TimerEvent::PeriodicUpdate(counter)) => {
                 let new_time = cx.shared.time_offset_ticks.load(Ordering::Relaxed) + counter % rtc::TICKS_PER_DAY;
                 *cx.local.current_ticks = new_time;
-
                 set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
-                update_display::spawn(next_state, new_time).ok();
                 read_temperature::spawn().ok();
+
+                match state {
+                    State::Idle => {
+                        update_display::spawn(new_time, display::Section::Display, false).ok();
+                    }
+                    _ => {}
+                }
             }
             Event::Timer(TimerEvent::AlarmTriggered) => {
-                // start pwm
                 start_pwm::spawn().ok();
                 disable_alarm::spawn().ok();
+                set_blinking::spawn(rtc::BLINK_TICKS).ok();
+            }
+            Event::Timer(TimerEvent::Timeout) => {
+                set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
+                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
+                disable_blinking::spawn().ok();
+            }
+            Event::Timer(TimerEvent::Blink) => {
+                set_blinking::spawn(rtc::BLINK_TICKS).ok();
+                match state {
+                    State::Alarm => {
+                        update_display::spawn(*cx.local.current_ticks, display::Section::Display, true).ok();
+                    }
+                    State::Settings(settings) => {
+                        match settings {
+                            Settings::ClockHours => {
+                                update_display::spawn(*cx.local.temp_ticks, display::Section::Hour, true).ok();
+                            }
+                            Settings::ClockMinutes => {
+                                update_display::spawn(*cx.local.temp_ticks, display::Section::Minute, true).ok();
+                            }
+                            Settings::AlarmHours => {
+                                update_display::spawn(*cx.local.temp_ticks, display::Section::Hour, true).ok();
+                            }
+                            Settings::AlarmMinutes => {
+                                update_display::spawn(*cx.local.temp_ticks, display::Section::Minute, true).ok();
+                            }
+                        }
+                    }
+                    _ => {}
+                }
             }
             Event::Encoder(EncoderEvent::ShortPressed) => {
-                match state_machine {
+                match state {
                     State::Idle => {
-                        // Set temp_ticks to current alarm
                         let alarm_time = cx.shared.alarm_offset_ticks.load(Ordering::Relaxed);  
                         *cx.local.temp_ticks = alarm_time;
     
                         disable_periodic_update::spawn().ok();
                         disable_alarm::spawn().ok();
                         set_timeout::spawn(rtc::TIMEOUT_SETTINGS_TICKS).ok();
-                        update_display::spawn(next_state, alarm_time).ok();
+                        set_blinking::spawn(rtc::BLINK_TICKS).ok();
+                        update_display::spawn(alarm_time, display::Section::Display, false).ok();
                     }
                     State::Alarm => {
                         stop_pwm::spawn().ok();
-                        update_display::spawn(next_state, *cx.local.current_ticks).ok();
+                        disable_blinking::spawn().ok();
+                        update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                     }
                     State::Settings(settings) => {
                         match settings {
                             Settings::ClockHours => {
-                                update_display::spawn(next_state, *cx.local.temp_ticks).ok();
                             }
                             Settings::ClockMinutes => {
                                 set_time::spawn(*cx.local.temp_ticks).ok();
                                 set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
-                                update_display::spawn(next_state, *cx.local.temp_ticks).ok();
+                                disable_blinking::spawn().ok();
+                                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                             }
                             Settings::AlarmHours => {
-                                update_display::spawn(next_state, *cx.local.temp_ticks).ok();
                             }
                             Settings::AlarmMinutes => {
                                 set_alarm::spawn(*cx.local.temp_ticks).ok();
                                 set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
-                                update_display::spawn(next_state, *cx.local.current_ticks).ok();
+                                disable_blinking::spawn().ok();
+                                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                             }
                         }
                     }
@@ -199,25 +242,27 @@ mod app {
                 }
             }
             Event::Encoder(EncoderEvent::LongPressed) => {
-                match state_machine {
+                match state {
                     State::Idle => {
                         let temp = *cx.local.current_ticks;
                         *cx.local.temp_ticks = temp;
 
                         disable_periodic_update::spawn().ok();
                         disable_alarm::spawn().ok();
+                        set_blinking::spawn(rtc::BLINK_TICKS).ok();
                         set_timeout::spawn(rtc::TIMEOUT_SETTINGS_TICKS).ok();
-                        update_display::spawn(next_state, temp).ok();
                     }
                     State::Alarm => {
-                        update_display::spawn(next_state, *cx.local.current_ticks).ok();
+                        stop_pwm::spawn().ok();
+                        disable_blinking::spawn().ok();
+                        update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                     }
                     _ => {}
                 }
                 
             }
             Event::Encoder(EncoderEvent::Rotated(direction)) => {
-                match state_machine {
+                match state {
                     State::Idle => {}
                     State::Alarm => {}
                     State::Settings(settings) => {
@@ -240,7 +285,7 @@ mod app {
                         let new_time = (temp as isize + diff) as u32 % rtc::TICKS_PER_DAY;
                         *cx.local.temp_ticks = new_time;
                         
-                        update_display::spawn(next_state, new_time).ok();
+                        update_display::spawn(new_time, display::Section::Display, false).ok();
                     }
                     _ => {
                         todo!()
@@ -253,7 +298,7 @@ mod app {
         }
     }
 
-    #[task(binds = RTC0, priority = 5, shared = [rtc, &time_offset_ticks])]
+    #[task(binds = RTC1, priority = 5, shared = [rtc, &time_offset_ticks])]
     fn rtc_interrupt(cx: rtc_interrupt::Context) {
         rtc::handle_interrupt(cx);
     }
@@ -271,11 +316,6 @@ mod app {
     #[task(priority = 3, shared = [rtc, &time_offset_ticks])]
     fn set_time(cx: set_time::Context, ticks: u32) {
         rtc::set_time(cx, ticks);
-    }
-
-    #[task(priority = 3, shared = [rtc, &time_offset_ticks])]
-    fn set_current_time(cx: set_current_time::Context) {
-        rtc::set_current_time(cx);
     }
 
     #[task(priority = 3, shared = [rtc, &alarm_offset_ticks, &time_offset_ticks])]
@@ -303,6 +343,21 @@ mod app {
         rtc::set_timeout(cx, ticks);
     }
 
+    #[task(priority = 1, shared = [rtc])]
+    fn disable_timeout(cx: disable_timeout::Context) {
+        rtc::disable_timeout(cx);
+    }
+
+    #[task(priority = 1, shared = [rtc])]
+    fn set_blinking(cx: set_blinking::Context, interval_ticks: u32) {
+        rtc::set_blinking(cx, interval_ticks);
+    }
+
+    #[task(priority = 1, shared = [rtc])]
+    fn disable_blinking(cx: disable_blinking::Context) {
+        rtc::disable_blinking(cx);
+    }
+
     #[task(priority = 1, local = [saadc, saadc_pin], shared = [temperature])]
     fn read_temperature(cx: read_temperature::Context) {
         thermistor::read(cx);
@@ -318,40 +373,13 @@ mod app {
         pwm::stop(cx);
     }
 
-    #[task(priority = 3, shared = [temperature])]
-    fn update_display(mut cx: update_display::Context, state: State, ticks: u32) {
-        let temperature = cx.shared.temperature.lock(|temperature| *temperature);
+    #[task(priority = 3, shared = [display, temperature], local = [on: bool = true])]
+    fn update_display(cx: update_display::Context, ticks: u32, section: display::Section, blink: bool) {
+        display::update_display_rtt(cx, ticks, section, blink);
+    }
 
-        let (hour, minute) = rtc::ticks_to_time(ticks as u32);
-
-        match state {
-            State::Idle => {
-
-                rprintln!("Time: {:02}:{:02}, Temperature: {:.2} C", hour, minute, temperature);
-            }
-            State::Alarm => {
-                rprintln!("Time: {:02}:{:02}, Temperature: {:.2} C", hour, minute, temperature);
-                rprintln!("BEEP BEEP BEEP");
-            }
-            State::Settings(settings) => {
-                match settings {
-                    Settings::ClockHours => {
-                        rprintln!("Time: _{:02}_:{:02}", hour, minute);
-                    }
-                    Settings::ClockMinutes => {
-                        rprintln!("Time: {:02}:_{:02}_", hour, minute);
-                    }
-                    Settings::AlarmHours => {
-                        rprintln!("Alarm: _{:02}_:{:02}", hour, minute);
-                    }
-                    Settings::AlarmMinutes => {
-                        rprintln!("Alarm: {:02}:_{:02}_", hour, minute);
-                    }
-                }
-            }
-            _ => {
-                todo!()
-            }
-        }
+    #[task(priority = 3, shared = [display])]
+    fn clear_display(cx: clear_display::Context) {
+        display::clear(cx);
     }
 }

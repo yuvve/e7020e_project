@@ -19,6 +19,9 @@ pub static PWM_DUTY_CYCLE_SEQUENCE: [u16; 100] = [
 const SEQ_REFRESH: u32 = 1000; // Periods per step
 const MAX_DUTY: u16 = 10000;
 
+pub type SeqBuffer = &'static mut [u16; 100];
+pub type Pwm0 = Option<PwmSeq<PWM0, SeqBuffer, SeqBuffer>>;
+
 pub(crate) fn init(pwm: Pwm<PWM0>, led_pin: Pin<Output<PushPull>>, amp_fan_hum_pin: Pin<Output<PushPull>>, 
                     haptic_pin: Pin<Output<PushPull>>) -> Pwm<PWM0> {
         pwm.set_prescaler(Prescaler::Div16)

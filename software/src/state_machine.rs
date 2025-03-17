@@ -27,9 +27,10 @@ pub enum Event {
 
 #[derive(Clone, Copy, Debug)]
 pub enum TimerEvent {
-    PeriodicUpdate(u32),  // Counter value
+    PeriodicUpdate(u32),    // Event contains RTC counter value
     AlarmTriggered,
-    Timeout,    // General timeout used for timing out settings/alarm
+    Timeout,                // General timeout used for timing out settings/alarm
+    Blink,                  // Used for blinking the alarm and settings display
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -51,7 +52,6 @@ impl StateMachine for State {
                 Event::Encoder(EncoderEvent::LongPressed) => State::Settings(Settings::ClockHours),
                 Event::VBUSDisconnected => State::BackupBattery,
                 Event::Timer(TimerEvent::AlarmTriggered) => State::Alarm,
-                Event::Timer(TimerEvent::PeriodicUpdate(_)) => State::Idle,
                 _ => State::Idle,
             }
 
