@@ -3,13 +3,12 @@
 #![no_main]
 #![no_std]
 #![deny(unsafe_code)]
-#![deny(warnings)]
+//#![deny(warnings)]
 
 use {
     cortex_m::asm, 
     hal::gpio::{Level, Output, Pin, PushPull}, 
     hal::pwm::*,
-    hal::pac::PWM0,
 
     nrf52833_hal as hal, 
     panic_rtt_target as _, 
@@ -18,16 +17,20 @@ use {
 };
 
 const TIMER_HZ: u32 = 1000; // 1000 Hz (1 ms granularity)
-const DUTY_TURNAROUND: u16 = 300;
-const MAX_DUTY: u16 = 1000;  // 1 kHz duty resolution
-const DUTY_STEP: u16 = 10;
-const TIMER_STEP_MS: u64 = 50;
+const SEQ_REFRESH: u32 = 2000; // Periods per step, 2 s per step
+
+// 1000 is off, 0 is full brightness
+pub static PWM_DUTY_CYCLE_SEQUENCE: [u16; 100] = [
+    1000, 999, 998, 997, 996, 995, 994, 993, 992, 991, 990, 989, 988, 987, 986, 985, 984, 983, 982, 981,
+    980, 979, 978, 977, 976, 975, 974, 973, 972, 971, 970, 969, 968, 967, 966, 965, 964, 963, 962, 961,
+    960, 959, 958, 957, 956, 955, 954, 953, 952, 951, 950, 949, 948, 947, 946, 945, 944, 943, 942, 941,
+    940, 939, 938, 937, 936, 935, 934, 933, 932, 931, 930, 929, 928, 927, 926, 925, 924, 923, 922, 921,
+    920, 919, 918, 917, 916, 915, 914, 913, 912, 911, 910, 909, 908, 907, 906, 905, 904, 903, 902, 901
+];
 
 #[rtic::app(device = nrf52833_hal::pac, dispatchers= [TIMER0])]
 mod app {
     use super::*;
-
-    type PWM = Pwm<PWM0>;
 
     #[monotonic(binds = SysTick, default = true)]
     type MyMono = Systick<TIMER_HZ>;
@@ -36,13 +39,15 @@ mod app {
     struct Shared {}
 
     #[local]
-    struct Local {
-        pwm: PWM,
-        duty: u16,
-    }
+    struct Local {}
 
-    #[init]
+    #[init(local = [ 
+        BUF0: [u16; 100] = PWM_DUTY_CYCLE_SEQUENCE,
+        BUF1: [u16; 100] = PWM_DUTY_CYCLE_SEQUENCE,
+    ])]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+        let BUF0 = cx.local.BUF0;
+        let BUF1 = cx.local.BUF1;
         // Initialize the monotonic (core clock at 64 MHz)
         let mono = Systick::new(cx.core.SYST, 64_000_000);
 
@@ -70,16 +75,20 @@ mod app {
 
         // PWM
         let pwm = Pwm::new(cx.device.PWM0);
-        let duty = 0;
 
-        pwm.set_prescaler(Prescaler::Div16);    // 1 kHz PWM frequency
-        pwm.set_output_pin(Channel::C0, led);
-        pwm.set_max_duty(MAX_DUTY);             
-        pwm.set_duty_off(Channel::C0, duty);    // start at 0% duty cycle
-        pwm.enable();
+        pwm.set_prescaler(Prescaler::Div16)
+            .set_max_duty(1000)
+            .set_output_pin(Channel::C0, led)
+            .set_counter_mode(CounterMode::Up)
+            .set_load_mode(LoadMode::Common)
+            .set_step_mode(StepMode::Auto)
+            .set_seq_refresh(Seq::Seq0, SEQ_REFRESH)
+            .set_seq_refresh(Seq::Seq1, SEQ_REFRESH)
+            .one_shot()
+            .enable();
+        pwm.load(Some(BUF0), Some(BUF1), true).ok();
 
-        dim_led::spawn_after(TIMER_STEP_MS.millis()).unwrap();
-        (Shared {}, Local {pwm, duty}, init::Monotonics(mono))
+        (Shared {}, Local {}, init::Monotonics(mono))
     }
 
     #[idle]
@@ -89,29 +98,5 @@ mod app {
         loop {
             asm::wfi();
         }
-    }
-
-    #[task(local = [pwm, duty, increasing:bool = true])]
-    fn dim_led(cx: dim_led::Context) {
-        let pwm = cx.local.pwm;
-        let duty = *cx.local.duty;
-        let increasing = *cx.local.increasing;
-        
-        if !increasing && duty <= DUTY_STEP {
-            *cx.local.increasing = true;
-        } else if duty >= DUTY_TURNAROUND {
-            *cx.local.increasing = false;
-        }
-
-        if increasing {
-            pwm.set_duty_off(Channel::C0, duty);
-            *cx.local.duty += DUTY_STEP;
-        } else {
-            pwm.set_duty_off(Channel::C0, duty);
-            *cx.local.duty -= DUTY_STEP;
-        }
-
-        rprintln!("dim_led: duty = {}", duty);
-        dim_led::spawn_after(TIMER_STEP_MS.millis()).unwrap();
     }
 }

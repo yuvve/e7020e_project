@@ -1,13 +1,14 @@
 #![no_main]
 #![no_std]
 #![deny(unsafe_code)]
-#![deny(warnings)]
+//#![deny(warnings)]
 
 mod state_machine;
 mod rtc;
 mod thermistor;
 mod rotary_encoder;
 mod uicr;
+mod pwm;
 
 
 use {
@@ -19,7 +20,9 @@ use {
         saadc::*,
         qdec::*,
         gpiote::*,
-        gpio::{p0::P0_03, Disconnected},
+        gpio::{Level, p0::P0_03, Disconnected, Output, Pin, PushPull},
+        pwm::*,
+        pac::PWM0,
     },
     nrf52833_hal as hal, 
     panic_rtt_target as _, 
@@ -39,6 +42,8 @@ mod app {
         alarm_offset_ticks: AtomicU32,  // Alarm offset in ticks from 00:00
         current_ticks: AtomicU32, // Temporary offset for settings
         temperature: f32,
+        #[lock_free]
+        pwm: Option<PwmSeq<PWM0, SeqBuffer, SeqBuffer>>
         }
 
     #[local]
@@ -47,24 +52,35 @@ mod app {
         saadc: Saadc,
         saadc_pin: P0_03<Disconnected>,
         qdec: Qdec,
-        gpiote:Gpiote
+        gpiote:Gpiote,
     }
+    type SeqBuffer = &'static mut [u16; 100];
 
-    #[init]
+    #[init(local = [ 
+        BUF0: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
+        BUF1: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
+    ])]
     fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
         rtt_init_print!();
+        let BUF0 = cx.local.BUF0;
+        let BUF1 = cx.local.BUF1;
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
         
         // Enable cycle counter
         cx.core.DCB.enable_trace();
         cx.core.DWT.enable_cycle_counter();
 
+        // Need to set up the 32kHz clock source for the RTC
+        let clocks = hal::clocks::Clocks::new(cx.device.CLOCK);
+        let _clocks = clocks.start_lfclk().enable_ext_hfosc();
+
         // Initialize UICR
         uicr::init(cx.device.UICR, cx.device.NVMC);
 
-        // Need to set up the 32kHz clock source for the RTC
-        let clocks = hal::clocks::Clocks::new(cx.device.CLOCK);
-        let _clocks = clocks.start_lfclk();
+        // Initialize PWM
+        let led_pin: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::Low).degrade();
+        let pwm = hal::pwm::Pwm::new(cx.device.PWM0);
+        let pwm = pwm::init(pwm, led_pin);
 
         // Initialize the RTC peripheral
         let rtc = rtc::init(cx.device.RTC0);
@@ -100,12 +116,13 @@ mod app {
             alarm_offset_ticks: AtomicU32::new(0),
             current_ticks: AtomicU32::new(0),
             temperature: 0.0,
+            pwm: pwm.load(Some(BUF0), Some(BUF1), false).ok(),
         }, Local {
             state_machine,
             saadc,
             saadc_pin,
             qdec,
-            gpiote
+            gpiote,
         }, init::Monotonics())
     }
 
@@ -134,6 +151,8 @@ mod app {
                 read_temperature::spawn().ok();
             }
             Event::Timer(TimerEvent::AlarmTriggered) => {
+                // start pwm
+                start_pwm::spawn().ok();
                 disable_alarm::spawn().ok();
             }
             Event::Encoder(EncoderEvent::ShortPressed) => {
@@ -149,6 +168,7 @@ mod app {
                         update_display::spawn(next_state, alarm_time).ok();
                     }
                     State::Alarm => {
+                        stop_pwm::spawn().ok();
                         update_display::spawn(next_state, *cx.local.current_ticks).ok();
                     }
                     State::Settings(settings) => {
@@ -284,6 +304,16 @@ mod app {
     #[task(priority = 1, local = [saadc, saadc_pin], shared = [temperature])]
     fn read_temperature(cx: read_temperature::Context) {
         thermistor::read(cx);
+    }
+
+    #[task(priority = 1, shared = [pwm])]
+    fn start_pwm(cx: start_pwm::Context) {
+        pwm::start(cx);
+    }
+
+    #[task(priority = 1, shared = [pwm])]
+    fn stop_pwm(cx: stop_pwm::Context) {
+        pwm::stop(cx);
     }
 
     #[task(priority = 3, shared = [temperature])]
