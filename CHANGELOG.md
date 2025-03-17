@@ -160,3 +160,5 @@
 
 - Simon:
   - Integrate PWM and LED into state machine
+  - Integrate fan, humidifier and haptic actuator. PWM levels not tested.
+  - Integrate display into state machine. Not tested on OLED. 
