@@ -7,6 +7,7 @@ mod state_machine;
 mod rtc;
 mod thermistor;
 mod rotary_encoder;
+mod uicr;
 
 
 use {
@@ -24,6 +25,7 @@ use {
     panic_rtt_target as _, 
     rtt_target::{rprintln, rtt_init_print}, 
 };
+
 
 
 #[rtic::app(device = nrf52833_hal::pac, dispatchers= [TEMP, RNG, ECB])]
@@ -57,31 +59,8 @@ mod app {
         cx.core.DCB.enable_trace();
         cx.core.DWT.enable_cycle_counter();
 
-        // Check if UICR is set correctly
-        let check_uicr_set = 
-        cx.device.UICR.pselreset[0].read().connect().is_connected()
-        | cx.device.UICR.pselreset[1].read().connect().is_connected();
-
-        if !check_uicr_set {
-            cx.device.NVMC.config.write(|w| w.wen().wen());
-            while cx.device.NVMC.ready.read().ready().is_busy() {}
-
-            // Set nReset pin        
-            for i in 0..2 {
-                cx.device.UICR.pselreset[i].write(|w| {
-                    w.pin().variant(thermistor::RESET_PIN);
-                    w.port().variant(thermistor::RESET_PORT);
-                    w.connect().connected();
-                    w
-                });
-                while !cx.device.NVMC.ready.read().ready().is_ready() {}
-            }
-            cx.device.NVMC.config.write(|w| w.wen().ren());
-            while cx.device.NVMC.ready.read().ready().is_busy() {}
-            
-            // Changes to UICR require a reset to take effect
-            cortex_m::peripheral::SCB::sys_reset();
-        };
+        // Initialize UICR
+        uicr::init(cx.device.UICR, cx.device.NVMC);
 
         // Need to set up the 32kHz clock source for the RTC
         let clocks = hal::clocks::Clocks::new(cx.device.CLOCK);
