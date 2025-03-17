@@ -3,7 +3,8 @@
 ## 27.01
 
 - Yuval: researched parts and circuits
-- Calle: researched parts and circuits
+- Calle: researched parts and circuits        let duty = 0;
+
 - Simon: researched parts and circuits
 
 ## 28.01
@@ -154,3 +155,8 @@
 
 - Simon:
   - Integrate rotary encoder and reset button into state machine
+ 
+## 16.03
+
+- Simon:
+  - Integrate PWM and LED into state machine
