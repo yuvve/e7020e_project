@@ -79,8 +79,10 @@ mod app {
 
         // Initialize PWM
         let led_pin: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::Low).degrade();
+        let amp_fan_hum_pin = port0.p0_10.into_push_pull_output(Level::Low).degrade();
+        let haptic_pin = port0.p0_20.into_push_pull_output(Level::Low).degrade();
         let pwm = hal::pwm::Pwm::new(cx.device.PWM0);
-        let pwm = pwm::init(pwm, led_pin);
+        let pwm = pwm::init(pwm, led_pin, amp_fan_hum_pin, haptic_pin);
 
         // Initialize the RTC peripheral
         let rtc = rtc::init(cx.device.RTC0);

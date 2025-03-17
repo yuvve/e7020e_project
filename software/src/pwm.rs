@@ -6,7 +6,8 @@ use {
     crate::app::*,
 };
 
-// 10000 is off, 0 is full brightness
+// 10000 is off, 0 is 100% duty cycle
+// This needs to be tested and adjusted for all the components
 pub static PWM_DUTY_CYCLE_SEQUENCE: [u16; 100] = [
     10000, 9990, 9980, 9970, 9960, 9950, 9940, 9930, 9920, 9910, 9900, 9890, 9880, 9870, 9860, 9850, 9840, 9830, 9820, 9810,
     9800, 9790, 9780, 9770, 9760, 9750, 9740, 9730, 9720, 9710, 9700, 9690, 9680, 9670, 9660, 9650, 9640, 9630, 9620, 9610,
@@ -18,10 +19,13 @@ pub static PWM_DUTY_CYCLE_SEQUENCE: [u16; 100] = [
 const SEQ_REFRESH: u32 = 1000; // Periods per step
 const MAX_DUTY: u16 = 10000;
 
-pub(crate) fn init(pwm: Pwm<PWM0>, led_pin: Pin<Output<PushPull>>, ) -> Pwm<PWM0> {
+pub(crate) fn init(pwm: Pwm<PWM0>, led_pin: Pin<Output<PushPull>>, amp_fan_hum_pin: Pin<Output<PushPull>>, 
+                    haptic_pin: Pin<Output<PushPull>>) -> Pwm<PWM0> {
         pwm.set_prescaler(Prescaler::Div16)
             .set_max_duty(MAX_DUTY)
             .set_output_pin(Channel::C0, led_pin)
+            .set_output_pin(Channel::C1, amp_fan_hum_pin)
+            .set_output_pin(Channel::C2, haptic_pin)
             .set_counter_mode(CounterMode::Up)
             .set_load_mode(LoadMode::Common)
             .set_step_mode(StepMode::Auto)
