@@ -142,3 +142,15 @@
 
 - Yuval:
   - Haptic actuator example
+- Simon:
+  - Integrate RTC into state machine
+
+## 15.03
+
+- Simon:
+  - Integrate thermistor into state machine
+ 
+## 16.03
+
+- Simon:
+  - Integrate rotary encoder and reset button into state machine
