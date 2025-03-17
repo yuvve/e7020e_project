@@ -717,6 +717,7 @@ dependencies = [
  "dwt-systick-monotonic",
  "embedded-graphics",
  "embedded-hal 0.2.7",
+ "heapless 0.7.17",
  "libm",
  "nb 1.1.0",
  "nrf52833-hal",
