@@ -156,7 +156,7 @@
 - Simon:
   - Integrate rotary encoder and reset button into state machine
  
-## 16.03
+## 17.03
 
 - Simon:
   - Integrate PWM and LED into state machine
