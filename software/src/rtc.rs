@@ -1,21 +1,15 @@
 use {
-    crate::{
-        app::*, 
-        state_machine::*
-    }, 
-    core::sync::atomic::Ordering, 
-    hal::{
-        pac::RTC1, 
-        rtc::*
-    }, 
-    nrf52833_hal::{self as hal}, 
-    rtic::Mutex, 
+    crate::{app::*, state_machine::*},
+    core::sync::atomic::Ordering,
+    hal::{pac::RTC1, rtc::*},
+    nrf52833_hal::{self as hal},
+    rtic::Mutex,
 };
 
 const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency, max prescaler value
 const MAX_TICKS: u32 = 16_777_216; // 24 bit max value for RTC counter
 pub const TICKS_PER_SECOND: u32 = 8;
-pub const TICKS_PER_MINUTE: u32 = TICKS_PER_SECOND;//* 60; // Interrupt every second for demonstration purpose, will be 8*60 in production
+pub const TICKS_PER_MINUTE: u32 = TICKS_PER_SECOND; //* 60; // Interrupt every second for demonstration purpose, will be 8*60 in production
 pub const TICKS_PER_HOUR: u32 = TICKS_PER_MINUTE * 60;
 pub const TICKS_PER_DAY: u32 = TICKS_PER_HOUR * 24;
 pub const TIMEOUT_SETTINGS_TICKS: u32 = TICKS_PER_MINUTE * 2; // Timeout after 2 minutes
@@ -24,7 +18,8 @@ pub const BLINK_TICKS: u32 = TICKS_PER_SECOND / 2; // Blink every 0.5 seconds
 pub(crate) fn init(rtc: RTC1) -> Rtc<hal::pac::RTC1> {
     let mut rtc = hal::rtc::Rtc::new(rtc, RTC_PRESCALER).unwrap();
     // Start periodic interrupt every minute, to update OLED display
-    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_MINUTE).unwrap();
+    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_MINUTE)
+        .unwrap();
     rtc.enable_interrupt(RtcInterrupt::Compare0, None);
     rtc.enable_interrupt(RtcInterrupt::Overflow, None);
     rtc.enable_counter();
@@ -42,7 +37,7 @@ pub(crate) fn handle_interrupt(mut cx: rtc_interrupt::Context) {
 
             let counter = rtc.get_counter();
             state_machine::spawn(Event::Timer(TimerEvent::PeriodicUpdate(counter))).ok();
-        } 
+        }
         // Compare 1: Alarm interrupt
         if rtc.is_event_triggered(RtcInterrupt::Compare1) {
             rtc.reset_event(RtcInterrupt::Compare1);
@@ -65,16 +60,20 @@ pub(crate) fn handle_interrupt(mut cx: rtc_interrupt::Context) {
             let time_offset_ticks = cx.shared.time_offset_ticks.load(Ordering::Relaxed);
             // Update the time offset to current time, adjusting for overflow
             let new_offset = (MAX_TICKS + time_offset_ticks) % TICKS_PER_DAY;
-            
-            cx.shared.time_offset_ticks.store(new_offset, Ordering::Relaxed);
+
+            cx.shared
+                .time_offset_ticks
+                .store(new_offset, Ordering::Relaxed);
         };
     });
 }
 
-pub(crate) fn set_alarm(mut cx: set_alarm::Context, ticks:  u32) {
-    let next_interrupt = next_alarm_ticks(cx.shared.time_offset_ticks.load(Ordering::Relaxed), ticks);
+pub(crate) fn set_alarm(mut cx: set_alarm::Context, ticks: u32) {
+    let next_interrupt =
+        next_alarm_ticks(cx.shared.time_offset_ticks.load(Ordering::Relaxed), ticks);
     cx.shared.rtc.lock(|rtc| {
-        rtc.set_compare(RtcCompareReg::Compare1, next_interrupt).unwrap();
+        rtc.set_compare(RtcCompareReg::Compare1, next_interrupt)
+            .unwrap();
         rtc.enable_interrupt(RtcInterrupt::Compare1, None);
     });
     cx.shared.alarm_offset_ticks.store(ticks, Ordering::Relaxed);
@@ -97,7 +96,8 @@ pub(crate) fn set_timeout(mut cx: set_timeout::Context, ticks: u32) {
     let counter = cx.shared.rtc.lock(|rtc| rtc.get_counter());
     let timeout_ticks = counter + ticks;
     cx.shared.rtc.lock(|rtc| {
-        rtc.set_compare(RtcCompareReg::Compare2, timeout_ticks).unwrap();
+        rtc.set_compare(RtcCompareReg::Compare2, timeout_ticks)
+            .unwrap();
         rtc.enable_interrupt(RtcInterrupt::Compare2, None);
     });
 }
@@ -115,10 +115,11 @@ pub(crate) fn set_blinking(mut cx: set_blinking::Context, interval_ticks: u32) {
     let next_interrupt = ((counter / interval_ticks) + 1) * interval_ticks;
 
     cx.shared.rtc.lock(|rtc| {
-        rtc.set_compare(RtcCompareReg::Compare3, next_interrupt % MAX_TICKS).unwrap();
+        rtc.set_compare(RtcCompareReg::Compare3, next_interrupt % MAX_TICKS)
+            .unwrap();
         rtc.enable_interrupt(RtcInterrupt::Compare3, None);
     });
-}   
+}
 
 pub(crate) fn disable_blinking(mut cx: disable_blinking::Context) {
     cx.shared.rtc.lock(|rtc| {
@@ -133,7 +134,8 @@ pub(crate) fn set_periodic_update(mut cx: set_periodic_update::Context, interval
     let next_interrupt = ((counter / interval_ticks) + 1) * interval_ticks;
 
     cx.shared.rtc.lock(|rtc| {
-        rtc.set_compare(RtcCompareReg::Compare0, next_interrupt % MAX_TICKS).unwrap();
+        rtc.set_compare(RtcCompareReg::Compare0, next_interrupt % MAX_TICKS)
+            .unwrap();
         rtc.enable_interrupt(RtcInterrupt::Compare0, None);
     });
 }
@@ -160,7 +162,7 @@ pub(crate) fn ticks_to_time(ticks: u32) -> (u8, u8) {
 }
 
 fn next_alarm_ticks(time_offset_ticks: u32, alarm_offset_ticks: u32) -> u32 {
-    let current_time = (time_offset_ticks ) % TICKS_PER_DAY;
+    let current_time = (time_offset_ticks) % TICKS_PER_DAY;
     let next_alarm_ticks = if current_time > alarm_offset_ticks {
         // Alarm time has already passed today, set it for tomorrow
         TICKS_PER_DAY - current_time + alarm_offset_ticks

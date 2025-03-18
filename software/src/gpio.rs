@@ -1,19 +1,14 @@
 use {
-    nrf52833_hal as hal, 
     hal::gpio::{
-        p0::{P0_03, Parts as P0Parts},
+        p0::{Parts as P0Parts, P0_03},
         p1::Parts as P1Parts,
-        Disconnected, 
-        Input, 
-        Output, 
-        Pin, 
-        PullUp, 
-        PushPull,
-        Level},
+        Disconnected, Input, Level, Output, Pin, PullUp, PushPull,
+    },
     hal::pac::{P0, P1},
+    nrf52833_hal as hal,
 };
 
-pub(crate) struct  Pins {
+pub(crate) struct Pins {
     pub(crate) led: Pin<Output<PushPull>>,
     pub(crate) amp_fan_hum: Pin<Output<PushPull>>,
     pub(crate) haptic: Pin<Output<PushPull>>,
@@ -33,7 +28,7 @@ pub(crate) fn init(p0: P0, p1: P1) -> Pins {
     let rotary_encoder = hal::qdec::Pins {
         a: port0.p0_30.into_pullup_input().degrade(),
         b: port0.p0_29.into_pullup_input().degrade(),
-        led: None
+        led: None,
     };
     let rotary_switch = port0.p0_28.into_pullup_input().degrade();
     let oled = hal::twim::Pins {

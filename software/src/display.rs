@@ -1,50 +1,55 @@
-
 use {
-    crate::{app::*, rtc::*,},
-    core::fmt::Write, 
+    crate::{app::*, rtc::*},
+    core::fmt::Write,
     embedded_graphics::{
-        mono_font::{ascii::FONT_10X20, MonoTextStyle}, 
-        pixelcolor::BinaryColor, 
-        prelude::*, 
-        text::Text
-    }, 
+        mono_font::{ascii::FONT_10X20, MonoTextStyle},
+        pixelcolor::BinaryColor,
+        prelude::*,
+        text::Text,
+    },
     hal::{
-        pac::TWIM0, 
-        twim::{Pins, Twim}
-    }, 
-    heapless::String, 
-    nrf52833_hal::{self as hal}, 
-    panic_rtt_target as _, 
-    rtic::Mutex, 
-    rtt_target::rprintln, 
+        pac::TWIM0,
+        twim::{Pins, Twim},
+    },
+    heapless::String,
+    nrf52833_hal::{self as hal},
+    panic_rtt_target as _,
+    rtic::Mutex,
+    rtt_target::rprintln,
     ssd1306::{mode::BufferedGraphicsMode, prelude::*, I2CDisplayInterface, Ssd1306},
 };
 
-const DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&FONT_10X20, BinaryColor::On,);
+const DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&FONT_10X20, BinaryColor::On);
 
-pub type Display = Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
+pub type Display =
+    Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
 pub(crate) enum Section {
     Hour,
     Minute,
-    Display
+    Display,
 }
 
-pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display{
-        let i2c = Twim::new(twim0, twim_pins, hal::twim::Frequency::K100);
-        let interface = I2CDisplayInterface::new(i2c);
-        let mut disp: Ssd1306<_, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>> =
-            Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
-                .into_buffered_graphics_mode();
+pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display {
+    let i2c = Twim::new(twim0, twim_pins, hal::twim::Frequency::K100);
+    let interface = I2CDisplayInterface::new(i2c);
+    let mut disp: Ssd1306<_, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>> =
+        Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
+            .into_buffered_graphics_mode();
 
-        //disp.init().unwrap();
-        //disp.clear(BinaryColor::Off).unwrap();
-        //disp.flush().unwrap();
-        disp
+    //disp.init().unwrap();
+    //disp.clear(BinaryColor::Off).unwrap();
+    //disp.flush().unwrap();
+    disp
 }
 
 // For debugging purposes
-pub(crate) fn update_display_rtt(mut cx: update_display::Context, ticks: u32, section: Section, blink: bool) {
+pub(crate) fn update_display_rtt(
+    mut cx: update_display::Context,
+    ticks: u32,
+    section: Section,
+    blink: bool,
+) {
     let temperature = cx.shared.temperature.lock(|temperature| *temperature);
     let (hour, minute) = ticks_to_time(ticks as u32);
 
@@ -61,7 +66,12 @@ pub(crate) fn update_display_rtt(mut cx: update_display::Context, ticks: u32, se
             }
         }
     } else {
-        rprintln!("Time: {:02}:{:02}, Temperature: {:.1}",hour,  minute, temperature);
+        rprintln!(
+            "Time: {:02}:{:02}, Temperature: {:.1}",
+            hour,
+            minute,
+            temperature
+        );
     }
 
     if blink {
@@ -69,10 +79,15 @@ pub(crate) fn update_display_rtt(mut cx: update_display::Context, ticks: u32, se
     }
 }
 
-pub(crate) fn update_display(mut cx: update_display::Context, ticks: u32, section: Section, blink: bool) {
+pub(crate) fn update_display(
+    mut cx: update_display::Context,
+    ticks: u32,
+    section: Section,
+    blink: bool,
+) {
     let temperature = cx.shared.temperature.lock(|temperature| *temperature);
     let temperature_str = format_temperature(temperature);
-    
+
     let (hour, minute) = ticks_to_time(ticks as u32);
     let (hour_str, minute_str) = format_time(hour, minute);
 
@@ -90,8 +105,7 @@ pub(crate) fn update_display(mut cx: update_display::Context, ticks: u32, sectio
                     draw_colon(disp, &DISPLAY_STYLE);
                     draw_temperature(disp, &temperature_str, &DISPLAY_STYLE);
                 }
-                Section::Display => {
-                }
+                Section::Display => {}
             }
         } else {
             draw_hour(disp, &hour_str, &DISPLAY_STYLE);
@@ -127,25 +141,56 @@ fn format_temperature(temperature: f32) -> String<10> {
     temp_str
 }
 
-fn draw_hour(disp: &mut Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, time_str: &str, style: &MonoTextStyle<BinaryColor>) {
+fn draw_hour(
+    disp: &mut Ssd1306<
+        I2CInterface<Twim<TWIM0>>,
+        DisplaySize128x64,
+        BufferedGraphicsMode<DisplaySize128x64>,
+    >,
+    time_str: &str,
+    style: &MonoTextStyle<BinaryColor>,
+) {
     Text::new(time_str, Point::new(24, 20), *style)
         .draw(disp)
         .unwrap();
 }
 
-fn draw_colon(disp: &mut Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, style: &MonoTextStyle<BinaryColor>) {
+fn draw_colon(
+    disp: &mut Ssd1306<
+        I2CInterface<Twim<TWIM0>>,
+        DisplaySize128x64,
+        BufferedGraphicsMode<DisplaySize128x64>,
+    >,
+    style: &MonoTextStyle<BinaryColor>,
+) {
     Text::new(":", Point::new(50, 20), *style)
         .draw(disp)
         .unwrap();
 }
 
-fn draw_minute(disp: &mut Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, time_str: &str, style: &MonoTextStyle<BinaryColor>) {
+fn draw_minute(
+    disp: &mut Ssd1306<
+        I2CInterface<Twim<TWIM0>>,
+        DisplaySize128x64,
+        BufferedGraphicsMode<DisplaySize128x64>,
+    >,
+    time_str: &str,
+    style: &MonoTextStyle<BinaryColor>,
+) {
     Text::new(time_str, Point::new(24, 20), *style)
         .draw(disp)
         .unwrap();
 }
 
-fn draw_temperature(disp: &mut Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>, temp_str: &str, style: &MonoTextStyle<BinaryColor>) {
+fn draw_temperature(
+    disp: &mut Ssd1306<
+        I2CInterface<Twim<TWIM0>>,
+        DisplaySize128x64,
+        BufferedGraphicsMode<DisplaySize128x64>,
+    >,
+    temp_str: &str,
+    style: &MonoTextStyle<BinaryColor>,
+) {
     Text::new(temp_str, Point::new(50, 50), *style)
         .draw(disp)
         .unwrap();
