@@ -2,7 +2,7 @@ use {
     crate::{app::*, state_machine::*},
     core::sync::atomic::Ordering,
     hal::{pac::RTC1, rtc::*},
-    nrf52833_hal::{self as hal},
+    nrf52833_hal as hal,
     rtic::Mutex,
 };
 

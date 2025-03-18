@@ -5,7 +5,7 @@ use {
         pac::PWM0,
         pwm::*,
     },
-    nrf52833_hal::{self as hal, pac::pwm0::SEQ},
+    nrf52833_hal as hal,
 };
 
 // 10000 is off, 0 is 100% duty cycle
@@ -42,8 +42,6 @@ static HAPTIC_SEQUENCE: [u16; 100] = [
 
 static CH3_SEQUENCE: [u16; 100] = [0u16; 100];
 
-pub static mut PWM_DUTY_CYCLE_SEQUENCE: [u16; 400] = [0u16; 400];
-
 const SEQ_REFRESH: u32 = 1000; // Periods per step
 const MAX_DUTY: u16 = 10000;
 
@@ -74,17 +72,17 @@ pub(crate) fn init(
 
 pub(crate) fn load_pwm_sequence(cx: load_pwm_sequence::Context) {
     let (buf0, buf1, pwm) = cx.shared.pwm.take().unwrap().split();
-    let SEQBUF0 = buf0.unwrap();
-    let SEQBUF1 = buf1.unwrap();
+    let seqbuf0 = buf0.unwrap();
+    let seqbuf1 = buf1.unwrap();
 
     for i in 0..100 {
-        SEQBUF0[i * 4] = LED_SEQUENCE[i];
-        SEQBUF0[i * 4 + 1] = AMP_FAN_HUM_SEQUENCE[i];
-        SEQBUF0[i * 4 + 2] = HAPTIC_SEQUENCE[i];
-        SEQBUF0[i * 4 + 3] = CH3_SEQUENCE[i];
+        seqbuf0[i * 4] = LED_SEQUENCE[i];
+        seqbuf0[i * 4 + 1] = AMP_FAN_HUM_SEQUENCE[i];
+        seqbuf0[i * 4 + 2] = HAPTIC_SEQUENCE[i];
+        seqbuf0[i * 4 + 3] = CH3_SEQUENCE[i];
     }
-    SEQBUF1.copy_from_slice(SEQBUF0);
-    let pwm = pwm.load(Some(SEQBUF0), Some(SEQBUF1), false).ok();
+    seqbuf1.copy_from_slice(seqbuf0);
+    let pwm = pwm.load(Some(seqbuf0), Some(seqbuf1), false).ok();
     *cx.shared.pwm = pwm;
 }
 

@@ -12,7 +12,7 @@ use {
         twim::{Pins, Twim},
     },
     heapless::String,
-    nrf52833_hal::{self as hal},
+    nrf52833_hal as hal,
     panic_rtt_target as _,
     rtic::Mutex,
     rtt_target::rprintln,

@@ -1,6 +1,6 @@
 use {
     hal::pac::{NVMC, UICR},
-    nrf52833_hal::{self as hal},
+    nrf52833_hal as hal,
 };
 
 const RESET_PIN: u8 = 18;

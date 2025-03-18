@@ -23,7 +23,8 @@ use {
         rtc::*,
         saadc::*,
     },
-    nrf52833_hal as hal, panic_rtt_target as _,
+    nrf52833_hal as hal, 
+    panic_rtt_target as _,
     rtt_target::{rprintln, rtt_init_print},
 };
 

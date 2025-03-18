@@ -6,7 +6,7 @@ use {
         pac::{GPIOTE, QDEC},
         qdec::*,
     },
-    nrf52833_hal::{self as hal},
+    nrf52833_hal as hal,
 };
 
 const ROTARY_ENCODER_THRESHOLD_SEC: f32 = 0.1;

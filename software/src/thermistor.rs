@@ -10,7 +10,7 @@ use {
     crate::app::*,
     hal::saadc::*,
     libm::logf,
-    nrf52833_hal::{self as hal},
+    nrf52833_hal as hal,
     rtic::Mutex,
 };
 
