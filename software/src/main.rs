@@ -207,11 +207,11 @@ mod app {
                 State::Settings(settings) => match settings {
                     Settings::ClockHours => {}
                     Settings::ClockMinutes => {
-                        set_time::spawn(*cx.local.temp_ticks).ok();
-                        set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
-                        set_alarm::spawn(cx.shared.alarm_offset_ticks.load(Ordering::Relaxed)).ok();
                         disable_blinking::spawn().ok();
-                                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
+                        set_time::spawn(*cx.local.temp_ticks).ok();
+                        set_alarm::spawn(cx.shared.alarm_offset_ticks.load(Ordering::Relaxed)).ok();
+                        update_display::spawn(*cx.local.temp_ticks, display::Section::Display, false).ok();
+                        set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
                     }
                     Settings::AlarmHours => {}
                     Settings::AlarmMinutes => {
