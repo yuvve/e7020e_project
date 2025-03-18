@@ -10,6 +10,7 @@ mod rotary_encoder;
 mod uicr;
 mod pwm;
 mod display;
+mod pins;
 
 use {
     crate::{state_machine::*, display::Display, pwm::Pwm0},
@@ -20,7 +21,7 @@ use {
         saadc::*,
         qdec::*,
         gpiote::*,
-        gpio::{Level, p0::P0_03, Disconnected, Output, Pin, PushPull},
+        gpio::{p0::P0_03, Disconnected},
     },
     nrf52833_hal as hal, 
     panic_rtt_target as _, 
@@ -62,9 +63,9 @@ mod app {
         let SEQBUF0 = cx.local.SEQBUF0;
         let SEQBUF1 = cx.local.SEQBUF1;
 
-        let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
-        let port1 = hal::gpio::p1::Parts::new(cx.device.P1);
-        
+        // Get GPIO pins
+        let pins = pins::init(cx.device.P0, cx.device.P1);
+
         // Enable cycle counter
         cx.core.DCB.enable_trace();
         cx.core.DWT.enable_cycle_counter();
@@ -77,33 +78,20 @@ mod app {
         uicr::init(cx.device.UICR, cx.device.NVMC);
 
         // Initialize PWM
-        let led_pin: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::Low).degrade();
-        let amp_fan_hum_pin = port0.p0_10.into_push_pull_output(Level::Low).degrade();
-        let haptic_pin = port0.p0_20.into_push_pull_output(Level::Low).degrade();
-        let pwm = pwm::init(cx.device.PWM0, led_pin, amp_fan_hum_pin, haptic_pin);
+        let pwm = pwm::init(cx.device.PWM0, pins.led, pins.amp_fan_hum, pins.haptic);
 
         // Initialize the RTC peripheral
         let rtc = rtc::init(cx.device.RTC1);
 
         // Initialize the rotary encoder and switch
-        let rotation_pins = hal::qdec::Pins {
-            a: port0.p0_30.into_pullup_input().degrade(),
-            b: port0.p0_29.into_pullup_input().degrade(),
-            led: None,
-        };
-        let switch_pin = port0.p0_28.into_pullup_input().degrade();
         let (qdec, gpiote) = rotary_encoder::init(
-            cx.device.QDEC, cx.device.GPIOTE, rotation_pins, switch_pin);
+            cx.device.QDEC, cx.device.GPIOTE, pins.rotary_encoder, pins.rotary_switch);
 
         // Initialize the OLED display
-        let scl_pin = port0.p0_11.into_floating_input().degrade();
-        let sda_pin = port1.p1_09.into_floating_input().degrade();
-        let twim_pins = hal::twim::Pins { scl: scl_pin, sda: sda_pin };
-        let display = display::init(cx.device.TWIM0, twim_pins);
+        let display = display::init(cx.device.TWIM0, pins.oled);
         
         // Initialize the thermistor, read initial temp
         let saadc = thermistor::init(cx.device.SAADC);
-        let saadc_pin = port0.p0_03;
         read_temperature::spawn().ok();
 
         // Simulate user setting the time
@@ -126,7 +114,7 @@ mod app {
         }, Local {
             state_machine,
             saadc,
-            saadc_pin,
+            saadc_pin: pins.saadc,
             qdec,
             gpiote,
         }, init::Monotonics())
