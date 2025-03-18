@@ -52,8 +52,8 @@ mod app {
     }
 
     #[init(local = [
-        SEQBUF0: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE,
-        SEQBUF1: [u16; 100] = pwm::PWM_DUTY_CYCLE_SEQUENCE
+        SEQBUF0: [u16; 400] = [0u16; 400],
+        SEQBUF1: [u16; 400] = [0u16; 400]
     ])]
     fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
         rtt_init_print!();
@@ -77,6 +77,7 @@ mod app {
         // Initialize PWM
         let pwm = pwm::init(cx.device.PWM0, pins.led, pins.amp_fan_hum, pins.haptic);
         let pwm = pwm.load(Some(SEQBUF0), Some(SEQBUF1), false).ok();
+        load_pwm_sequence::spawn().ok();
 
         // Initialize the RTC peripheral
         let rtc = rtc::init(cx.device.RTC1);
@@ -339,9 +340,14 @@ mod app {
         rtc::disable_blinking(cx);
     }
 
-    #[task(priority = 1, local = [saadc, saadc_pin], shared = [temperature])]
+    #[task(priority = 3, local = [saadc, saadc_pin], shared = [temperature])]
     fn read_temperature(cx: read_temperature::Context) {
         thermistor::read(cx);
+    }
+
+    #[task(priority = 1, shared = [pwm])]
+    fn load_pwm_sequence(cx: load_pwm_sequence::Context) {
+        pwm::load_pwm_sequence(cx);
     }
 
     #[task(priority = 1, shared = [pwm])]
