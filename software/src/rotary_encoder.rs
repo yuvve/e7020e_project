@@ -22,7 +22,6 @@ pub(crate) fn init(qdec: QDEC, gpiote: GPIOTE, rotation_pins: Pins, switch_pin: 
     .debounce(true)
     .enable();
 
-    
     let gpiote = Gpiote::new(gpiote);
     gpiote.channel0().input_pin(&switch_pin)
         .hi_to_lo()

@@ -159,8 +159,6 @@ pub(crate) fn ticks_to_time(ticks: u32) -> (u8, u8) {
     (hour as u8, minute as u8)
 }
 
-
-
 fn next_alarm_ticks(time_offset_ticks: u32, alarm_offset_ticks: u32) -> u32 {
     let current_time = (time_offset_ticks ) % TICKS_PER_DAY;
     let next_alarm_ticks = if current_time > alarm_offset_ticks {

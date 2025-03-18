@@ -38,7 +38,6 @@ mod app {
         rtc: Rtc<hal::pac::RTC1>,
         time_offset_ticks: AtomicU32,   // Time offset in ticks from 00:00
         alarm_offset_ticks: AtomicU32,  // Alarm offset in ticks from 00:00
-        current_ticks: AtomicU32,       // Temporary offset for settings
         temperature: f32,
         #[lock_free]
         pwm: Pwm0,
@@ -81,8 +80,7 @@ mod app {
         let led_pin: Pin<Output<PushPull>> = port0.p0_09.into_push_pull_output(Level::Low).degrade();
         let amp_fan_hum_pin = port0.p0_10.into_push_pull_output(Level::Low).degrade();
         let haptic_pin = port0.p0_20.into_push_pull_output(Level::Low).degrade();
-        let pwm = hal::pwm::Pwm::new(cx.device.PWM0);
-        let pwm = pwm::init(pwm, led_pin, amp_fan_hum_pin, haptic_pin);
+        let pwm = pwm::init(cx.device.PWM0, led_pin, amp_fan_hum_pin, haptic_pin);
 
         // Initialize the RTC peripheral
         let rtc = rtc::init(cx.device.RTC1);
@@ -120,9 +118,8 @@ mod app {
         let state_machine = State::Idle;
         (Shared {
             rtc,
-            time_offset_ticks: AtomicU32::new(0),
-            alarm_offset_ticks: AtomicU32::new(0),
-            current_ticks: AtomicU32::new(time_ticks),
+            time_offset_ticks: AtomicU32::new(time_ticks),
+            alarm_offset_ticks: AtomicU32::new(alarm_ticks),
             temperature: 0.0,
             pwm: pwm.load(Some(SEQBUF0), Some(SEQBUF1), false).ok(),
             display,
@@ -143,7 +140,7 @@ mod app {
         }
     }
 
-    #[task(priority = 4, capacity = 10, local = [state_machine, current_ticks: u32 = 0, temp_ticks: u32 = 0], shared = [&time_offset_ticks, &current_ticks, &alarm_offset_ticks, temperature])]
+    #[task(priority = 4, capacity = 10, local = [state_machine, current_ticks: u32 = 0, temp_ticks: u32 = 0], shared = [&time_offset_ticks, &alarm_offset_ticks])]
     fn state_machine(cx: state_machine::Context, event: Event) {
         let state = *cx.local.state_machine;
         let next_state = state.next(event);
@@ -171,8 +168,8 @@ mod app {
             }
             Event::Timer(TimerEvent::Timeout) => {
                 set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
-                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                 disable_blinking::spawn().ok();
+                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
             }
             Event::Timer(TimerEvent::Blink) => {
                 set_blinking::spawn(rtc::BLINK_TICKS).ok();
@@ -205,7 +202,6 @@ mod app {
                         let alarm_time = cx.shared.alarm_offset_ticks.load(Ordering::Relaxed);  
                         *cx.local.temp_ticks = alarm_time;
     
-                        disable_periodic_update::spawn().ok();
                         disable_alarm::spawn().ok();
                         set_timeout::spawn(rtc::TIMEOUT_SETTINGS_TICKS).ok();
                         set_blinking::spawn(rtc::BLINK_TICKS).ok();
@@ -223,6 +219,7 @@ mod app {
                             Settings::ClockMinutes => {
                                 set_time::spawn(*cx.local.temp_ticks).ok();
                                 set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
+                                set_alarm::spawn(cx.shared.alarm_offset_ticks.load(Ordering::Relaxed)).ok();
                                 disable_blinking::spawn().ok();
                                 update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                             }
@@ -230,7 +227,6 @@ mod app {
                             }
                             Settings::AlarmMinutes => {
                                 set_alarm::spawn(*cx.local.temp_ticks).ok();
-                                set_periodic_update::spawn(rtc::TICKS_PER_MINUTE).ok();
                                 disable_blinking::spawn().ok();
                                 update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                             }
@@ -263,7 +259,9 @@ mod app {
             }
             Event::Encoder(EncoderEvent::Rotated(direction)) => {
                 match state {
-                    State::Idle => {}
+                    State::Idle => {
+                        // Should we set the volume here?
+                    }
                     State::Alarm => {}
                     State::Settings(settings) => {
                         let mut diff = direction;

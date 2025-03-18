@@ -24,7 +24,7 @@ pub(crate) fn init(saadc: hal::pac::SAADC) -> Saadc {
     saadc
 }
 
-pub(crate) fn read(mut cx: __rtic_internal_read_temperature_Context) {
+pub(crate) fn read(mut cx: read_temperature::Context) {
     let saadc = cx.local.saadc;
     let saadc_pin = cx.local.saadc_pin;
 
