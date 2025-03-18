@@ -166,4 +166,7 @@
 
 ## 18.03
 
-- Yuval: add CLI example
+- Yuval:
+  - add CLI example
+- Simon:
+  - Add separate PWM sequences for LED, amp/fan/hum and haptic actuator
