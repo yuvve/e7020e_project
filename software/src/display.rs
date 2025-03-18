@@ -14,12 +14,23 @@ use {
     heapless::String,
     nrf52833_hal as hal,
     panic_rtt_target as _,
+    profont::PROFONT_24_POINT,
     rtic::Mutex,
     rtt_target::rprintln,
     ssd1306::{mode::BufferedGraphicsMode, prelude::*, I2CDisplayInterface, Ssd1306},
 };
 
 const DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&FONT_10X20, BinaryColor::On);
+const ALT_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_24_POINT, BinaryColor::On);
+
+const FONT_SIZE: Point = Point::new(10, 20);
+const ALT_FONT_SIZE: Point = Point::new(16, 29);
+
+const TIME_POSITION: Point = Point::new(24, 20);
+const HOUR_POSITION: Point = Point::new(TIME_POSITION.x, TIME_POSITION.y);
+const COLON_POSITION: Point = Point::new(HOUR_POSITION.x + (FONT_SIZE.x * 2), TIME_POSITION.y);
+const MINUTE_POSITION: Point = Point::new(COLON_POSITION.x + FONT_SIZE.x, TIME_POSITION.y);
+const TEMPERATURE_POSITION: Point = Point::new(50, 50);
 
 pub type Display =
     Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
@@ -56,10 +67,10 @@ pub(crate) fn update_display_rtt(
     if blink && !*cx.local.on {
         match section {
             Section::Hour => {
-                rprintln!("Time:   :{:02}, Temperature: {:.1}", minute, temperature);
+                rprintln!("   :{:02}     {:.1} C", minute, temperature);
             }
             Section::Minute => {
-                rprintln!("Time: {:02}:  , Temperature: {:.1}", hour, temperature);
+                rprintln!(" {:02}:       {:.1} C", hour, temperature);
             }
             Section::Display => {
                 rprintln!("(super gentle alarm)");
@@ -67,7 +78,7 @@ pub(crate) fn update_display_rtt(
         }
     } else {
         rprintln!(
-            "Time: {:02}:{:02}, Temperature: {:.1}",
+            " {:02}:{:02}     {:.1} C",
             hour,
             minute,
             temperature
@@ -150,7 +161,7 @@ fn draw_hour(
     time_str: &str,
     style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(time_str, Point::new(24, 20), *style)
+    Text::new(time_str, HOUR_POSITION, *style)
         .draw(disp)
         .unwrap();
 }
@@ -163,7 +174,7 @@ fn draw_colon(
     >,
     style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(":", Point::new(50, 20), *style)
+    Text::new(":", COLON_POSITION, *style)
         .draw(disp)
         .unwrap();
 }
@@ -177,7 +188,7 @@ fn draw_minute(
     time_str: &str,
     style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(time_str, Point::new(24, 20), *style)
+    Text::new(time_str, MINUTE_POSITION, *style)
         .draw(disp)
         .unwrap();
 }
@@ -191,7 +202,7 @@ fn draw_temperature(
     temp_str: &str,
     style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(temp_str, Point::new(50, 50), *style)
+    Text::new(temp_str, TEMPERATURE_POSITION, *style)
         .draw(disp)
         .unwrap();
 }
