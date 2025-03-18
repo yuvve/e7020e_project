@@ -3,7 +3,8 @@ const R_25: f32 = 10000.0;      // 10k Ohm at 25 C
 const T_25: f32 = 298.15;       // 25 C in Kelvin
 const VDD: f32 = 2.8;           // Measured VDD
 const ADC_MAX: f32 = 4095.0;    // 12-bit ADC max value
-
+const UPPER_LIMIT: f32 = 40.0;  // Upper limit for temperature
+const LOWER_LIMIT: f32 = 0.0;   // Lower limit for temperature
 
 use {
     crate::app::*,
@@ -31,9 +32,12 @@ pub(crate) fn read(mut cx: __rtic_internal_read_temperature_Context) {
     let adc_value = saadc.read_channel(saadc_pin).unwrap();
     let temp = calculate_temperature(adc_value);
 
-    cx.shared.temperature.lock(|temperature| {
-        *temperature = temp;
-    });
+    // Only update temperature if it is within the limits
+    if temp >= LOWER_LIMIT && temp <= UPPER_LIMIT {
+        cx.shared.temperature.lock(|temperature| {
+            *temperature = temp;
+        });
+    }
 }
 
 fn calculate_temperature(adc_value: i16) -> f32 {
