@@ -17,8 +17,8 @@ pub const BLINK_TICKS: u32 = TICKS_PER_SECOND / 4; // Blink every 0.25 seconds
 
 pub(crate) fn init(rtc: RTC1) -> Rtc<hal::pac::RTC1> {
     let mut rtc = hal::rtc::Rtc::new(rtc, RTC_PRESCALER).unwrap();
-    // Start periodic interrupt every minute, to update OLED display
-    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_MINUTE)
+    // Set to interrupt straight away, to initialize the periodic update
+    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_SECOND)
         .unwrap();
     rtc.enable_interrupt(RtcInterrupt::Compare0, None);
     rtc.enable_interrupt(RtcInterrupt::Overflow, None);

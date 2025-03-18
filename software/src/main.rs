@@ -101,12 +101,10 @@ mod app {
         // Simulate user setting the time
         let time_ticks = rtc::time_to_ticks(06, 20);
         set_time::spawn(time_ticks).ok();
-        update_display::spawn(time_ticks, display::Section::Display, false).ok();
 
         // Simulate user setting the alarm,
         let alarm_ticks = rtc::time_to_ticks(06, 25);
         set_alarm::spawn(alarm_ticks).ok();
-
         (
             Shared {
                 rtc,
@@ -341,7 +339,7 @@ mod app {
         rtc::disable_blinking(cx);
     }
 
-    #[task(priority = 3, local = [saadc, saadc_pin], shared = [temperature])]
+    #[task(priority = 1, local = [saadc, saadc_pin], shared = [temperature])]
     fn read_temperature(cx: read_temperature::Context) {
         thermistor::read(cx);
     }
