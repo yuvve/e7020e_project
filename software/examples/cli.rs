@@ -112,24 +112,52 @@ mod app {
         match command {
             CliCommand::SetTime(hour, minute) => {
                 rprintln!("Set time: {:02}:{:02}", hour, minute);
-                write_to_serial(b"Time set");
+
+                let mut time = [0u8; 5];
+                time_formatter(hour, minute, &mut time);
+                let msg = b"Time set to ";
+                let mut data = [0u8; 17];
+                data[0..12].copy_from_slice(msg);
+                data[12..17].copy_from_slice(&time);
+                write_to_serial(&data);
             }
             CliCommand::SetAlarm(hour, minute) => {
                 rprintln!("Set alarm: {:02}:{:02}", hour, minute);
-                write_to_serial(b"Alarm set");
+
+                let mut time = [0u8; 5];
+                time_formatter(hour, minute, &mut time);
+                let msg = b"Alarm set to ";
+                let mut data = [0u8; 18];
+                data[0..13].copy_from_slice(msg);
+                data[13..18].copy_from_slice(&time);
+                write_to_serial(&data);
             }
             CliCommand::GetTime => {
                 rprintln!("Get time");
-                write_to_serial(b"Time: PLACEHOLDER");
+
+                let mut time = [0u8; 5];
+                time_formatter(0, 0, &mut time);
+                let msg = b"Current time: ";
+                let mut data = [0u8; 19];
+                data[0..14].copy_from_slice(msg);
+                data[14..19].copy_from_slice(&time);
+                write_to_serial(&data);
             }
             CliCommand::GetAlarm => {
                 rprintln!("Get alarm");
-                write_to_serial(b"Alarm: PLACEHOLDER");
+
+                let mut time = [0u8; 5];
+                time_formatter(0, 0, &mut time);
+                let msg = b"Current alarm: ";
+                let mut data = [0u8; 20];
+                data[0..15].copy_from_slice(msg);
+                data[15..20].copy_from_slice(&time);
+                write_to_serial(&data);
             }
         }
     }
 
-    fn parse(bytes: &[u8]) -> Option<CliCommand> {
+    fn parse_serial_cmd(bytes: &[u8]) -> Option<CliCommand> {
         let mut split = bytes.splitn(bytes.len(), |c| *c == b' ');
         let cmd = split.next()?;
         match cmd {
@@ -180,6 +208,14 @@ mod app {
             _ => None,
         }
     }
+
+    fn time_formatter(hour: u8, minute: u8, buffer: &mut [u8; 5]){
+        buffer[0] = (hour / 10) + b'0';
+        buffer[1] = (hour % 10) + b'0';
+        buffer[2] = b':';
+        buffer[3] = (minute / 10) + b'0';
+        buffer[4] = (minute % 10) + b'0';
+    }
     
 
     // Should NOT be RTIC task
@@ -222,7 +258,7 @@ mod app {
             13 => {
                 let slice = &data_arr[0..*len];
                 rprintln!("Received: {:?}", core::str::from_utf8(slice));
-                if let Some(command) = parse(slice) {
+                if let Some(command) = parse_serial_cmd(slice) {
                     cli::spawn(command).unwrap();
                 } else {
                     rprintln!("Invalid command");
