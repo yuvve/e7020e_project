@@ -143,6 +143,7 @@
 
 - Yuval:
   - Haptic actuator example
+  - A little work on speaker
 - Simon:
   - Integrate RTC into state machine
 
@@ -150,15 +151,19 @@
 
 - Simon:
   - Integrate thermistor into state machine
- 
+
 ## 16.03
 
 - Simon:
   - Integrate rotary encoder and reset button into state machine
- 
+
 ## 17.03
 
 - Simon:
   - Integrate PWM and LED into state machine
   - Integrate fan, humidifier and haptic actuator. PWM levels not tested.
-  - Integrate display into state machine. Not tested on OLED. 
+  - Integrate display into state machine. Not tested on OLED.
+
+## 18.03
+
+- Yuval: add CLI example
