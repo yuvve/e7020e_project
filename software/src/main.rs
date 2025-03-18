@@ -264,7 +264,7 @@ mod app {
                             }
                         }
                         let temp = *cx.local.temp_ticks;
-                        let new_time = (temp as isize + diff) as u32 % rtc::TICKS_PER_DAY;
+                        let new_time = (temp as isize + diff).rem_euclid(rtc::TICKS_PER_DAY as isize) as u32;
                         *cx.local.temp_ticks = new_time;
 
                         update_display::spawn(new_time, display::Section::Display, false).ok();
