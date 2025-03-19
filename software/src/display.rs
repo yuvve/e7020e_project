@@ -14,23 +14,25 @@ use {
     heapless::String,
     nrf52833_hal as hal,
     panic_rtt_target as _,
-    profont::PROFONT_24_POINT,
+    profont::*,
     rtic::Mutex,
     rtt_target::rprintln,
     ssd1306::{mode::BufferedGraphicsMode, prelude::*, I2CDisplayInterface, Ssd1306},
 };
 
-const DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&FONT_10X20, BinaryColor::On);
-const ALT_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_24_POINT, BinaryColor::On);
+const TIME_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_24_POINT, BinaryColor::On);
+const TEMP_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_14_POINT, BinaryColor::On);
 
-const FONT_SIZE: Point = Point::new(10, 20);
-const ALT_FONT_SIZE: Point = Point::new(16, 29);
+//const FONT_SIZE: Point = Point::new(10, 20);
+const FONT_SIZE: Point = Point::new(16, 29);
 
 const TIME_POSITION: Point = Point::new(24, 20);
 const HOUR_POSITION: Point = Point::new(TIME_POSITION.x, TIME_POSITION.y);
 const COLON_POSITION: Point = Point::new(HOUR_POSITION.x + (FONT_SIZE.x * 2), TIME_POSITION.y);
 const MINUTE_POSITION: Point = Point::new(COLON_POSITION.x + FONT_SIZE.x, TIME_POSITION.y);
-const TEMPERATURE_POSITION: Point = Point::new(50, 50);
+const TEMPERATURE_POSITION: Point = Point::new(35, 50);
+const ALARM_POSITION: Point = Point::new(MINUTE_POSITION.x + (FONT_SIZE.x * 2), TIME_POSITION.y);
+const ALARM_STRING: &str = "(«";
 
 pub type Display =
     Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
@@ -39,6 +41,7 @@ pub(crate) enum Section {
     Hour,
     Minute,
     Display,
+    AlarmIcon,
 }
 
 pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display {
@@ -48,9 +51,9 @@ pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display {
         Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
             .into_buffered_graphics_mode();
 
-    //disp.init().unwrap();
-    //disp.clear(BinaryColor::Off).unwrap();
-    //disp.flush().unwrap();
+    disp.init().unwrap();
+    disp.clear(BinaryColor::Off).unwrap();
+    disp.flush().unwrap();
     disp
 }
 
@@ -74,6 +77,9 @@ pub(crate) fn update_display_rtt(
             }
             Section::Display => {
                 rprintln!("(super gentle alarm)");
+            }
+            Section::AlarmIcon => {
+                rprintln!(" {:02}:{:02}     {:.1} C  {}", hour, minute, temperature, ALARM_STRING);
             }
         }
     } else {
@@ -107,23 +113,31 @@ pub(crate) fn update_display(
         if blink && !*cx.local.on {
             match section {
                 Section::Hour => {
-                    draw_colon(disp, &DISPLAY_STYLE);
-                    draw_minute(disp, &minute_str, &DISPLAY_STYLE);
-                    draw_temperature(disp, &temperature_str, &DISPLAY_STYLE);
+                    draw_colon(disp);
+                    draw_minute(disp, &minute_str);
+                    draw_temperature(disp, &temperature_str);
                 }
                 Section::Minute => {
-                    draw_hour(disp, &hour_str, &DISPLAY_STYLE);
-                    draw_colon(disp, &DISPLAY_STYLE);
-                    draw_temperature(disp, &temperature_str, &DISPLAY_STYLE);
+                    draw_hour(disp, &hour_str);
+                    draw_colon(disp);
+                    draw_temperature(disp, &temperature_str);
                 }
                 Section::Display => {}
+                Section::AlarmIcon => {            
+                    draw_hour(disp, &hour_str);
+                    draw_colon(disp);
+                    draw_minute(disp, &minute_str);
+                    draw_temperature(disp, &temperature_str);
+                    draw_alarm_icon(disp);
+                }
             }
         } else {
-            draw_hour(disp, &hour_str, &DISPLAY_STYLE);
-            draw_colon(disp, &DISPLAY_STYLE);
-            draw_minute(disp, &minute_str, &DISPLAY_STYLE);
-            draw_temperature(disp, &temperature_str, &DISPLAY_STYLE);
+            draw_hour(disp, &hour_str);
+            draw_colon(disp);
+            draw_minute(disp, &minute_str);
+            draw_temperature(disp, &temperature_str);
         }
+        disp.flush().unwrap();
     });
 
     if blink {
@@ -148,7 +162,7 @@ fn format_time(hour: u8, minute: u8) -> (String<10>, String<10>) {
 
 fn format_temperature(temperature: f32) -> String<10> {
     let mut temp_str: String<10> = String::new();
-    core::write!(&mut temp_str, "{:.2} C", temperature).unwrap();
+    core::write!(&mut temp_str, "{:.1}°C", temperature).unwrap();
     temp_str
 }
 
@@ -159,9 +173,8 @@ fn draw_hour(
         BufferedGraphicsMode<DisplaySize128x64>,
     >,
     time_str: &str,
-    style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(time_str, HOUR_POSITION, *style)
+    Text::new(time_str, HOUR_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
 }
@@ -171,10 +184,9 @@ fn draw_colon(
         I2CInterface<Twim<TWIM0>>,
         DisplaySize128x64,
         BufferedGraphicsMode<DisplaySize128x64>,
-    >,
-    style: &MonoTextStyle<BinaryColor>,
+    >
 ) {
-    Text::new(":", COLON_POSITION, *style)
+    Text::new(":", COLON_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
 }
@@ -186,9 +198,8 @@ fn draw_minute(
         BufferedGraphicsMode<DisplaySize128x64>,
     >,
     time_str: &str,
-    style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(time_str, MINUTE_POSITION, *style)
+    Text::new(time_str, MINUTE_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
 }
@@ -200,9 +211,20 @@ fn draw_temperature(
         BufferedGraphicsMode<DisplaySize128x64>,
     >,
     temp_str: &str,
-    style: &MonoTextStyle<BinaryColor>,
 ) {
-    Text::new(temp_str, TEMPERATURE_POSITION, *style)
+    Text::new(temp_str, TEMPERATURE_POSITION, TEMP_DISPLAY_STYLE)
+        .draw(disp)
+        .unwrap();
+}
+
+fn draw_alarm_icon(
+    disp: &mut Ssd1306<
+        I2CInterface<Twim<TWIM0>>,
+        DisplaySize128x64,
+        BufferedGraphicsMode<DisplaySize128x64>,
+    >,
+) {
+    Text::new(ALARM_STRING, ALARM_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
 }

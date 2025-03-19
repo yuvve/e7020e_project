@@ -169,7 +169,7 @@ mod app {
                 set_blinking::spawn(rtc::BLINK_TICKS).ok();
                 match state {
                     State::Alarm => {
-                        update_display::spawn(*cx.local.current_ticks, display::Section::Display, true).ok();
+                        update_display::spawn(*cx.local.current_ticks, display::Section::AlarmIcon, true).ok();
                     }
                     State::Settings(settings) => match settings {
                         Settings::ClockHours => {
@@ -366,7 +366,8 @@ mod app {
         section: display::Section,
         blink: bool,
     ) {
-        display::update_display_rtt(cx, ticks, section, blink);
+        //display::update_display_rtt(cx, ticks, section, blink);
+        display::update_display(cx, ticks, section, blink);
     }
 
     #[task(priority = 3, shared = [display])]
