@@ -145,5 +145,6 @@
     "lcomp",
     "LPCOMP",
     "vref",
+    "VBUS",
   ],
 }

@@ -1,0 +1,216 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.3.0 Safari/537.36" version="26.0.9">
+  <diagram name="Page-1" id="biP09wfiMuU9MYSKSn2N">
+    <mxGraphModel dx="1313" dy="774" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="LTfjDitk7vakBuSZRTtx-35" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="315" width="330" height="630" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-8" target="LTfjDitk7vakBuSZRTtx-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-6" value="Encoder&lt;br&gt;inward pressed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-5">
+          <mxGeometry x="-0.265" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-8" target="LTfjDitk7vakBuSZRTtx-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-50" value="Timeout" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-43">
+          <mxGeometry x="-0.18" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-8" value="Set Clock Hours" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-11" target="LTfjDitk7vakBuSZRTtx-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-51" value="Timeout" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-45">
+          <mxGeometry x="-0.18" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-11" value="Set Clock Minutes" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="490" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="LTfjDitk7vakBuSZRTtx-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="570" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-13" value="Encoder&lt;br&gt;inward pressed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-12">
+          <mxGeometry x="-0.265" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-47" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-16" target="LTfjDitk7vakBuSZRTtx-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-52" value="Timeout" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-47">
+          <mxGeometry x="-0.03" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-16" value="Set Alarm Hours" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="650" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="LTfjDitk7vakBuSZRTtx-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="730" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-18" value="Encoder&lt;br&gt;inward pressed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-17">
+          <mxGeometry x="-0.265" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-49" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-21" target="LTfjDitk7vakBuSZRTtx-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-53" value="Timeout" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-49">
+          <mxGeometry x="-0.205" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-21" target="LTfjDitk7vakBuSZRTtx-48">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="910" />
+              <mxPoint x="260" y="910" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-55" value="Encoder&lt;br&gt;inward pressed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-54">
+          <mxGeometry x="0.016" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-21" value="Set Alarm Minutes" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="810" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-22" value="Settings" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="160" y="275" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-28" target="LTfjDitk7vakBuSZRTtx-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-28" value="Start" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-40" target="LTfjDitk7vakBuSZRTtx-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="223" y="170" />
+              <mxPoint x="223" y="205" />
+              <mxPoint x="100" y="205" />
+            </Array>
+            <mxPoint x="223" y="167" as="sourcePoint" />
+            <mxPoint x="70" y="284" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-57" value="Encoder&lt;br&gt;inward pressed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-33">
+          <mxGeometry x="-0.0841" y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-61" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-40" target="LTfjDitk7vakBuSZRTtx-60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-62" value="Alarm detected" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-61">
+          <mxGeometry x="-0.0714" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-40" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="110" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-42" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="330" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-44" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="490" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-46" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="650" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-48" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="810" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-60" target="LTfjDitk7vakBuSZRTtx-40">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="75" />
+              <mxPoint x="260" y="75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-65" value="Encoder&amp;nbsp;&lt;div&gt;inward pressed&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-63">
+          <mxGeometry x="0.0893" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-60" target="LTfjDitk7vakBuSZRTtx-40">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="225" />
+              <mxPoint x="260" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-66" value="Alarm timeout" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-64">
+          <mxGeometry x="0.0966" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-60" value="Alarm Mode" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="110" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-67" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="315" width="430" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-68" value="Backup battery mode" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="520" y="275.00000000000006" width="190" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-72" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-70" target="LTfjDitk7vakBuSZRTtx-71">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-73" value="VBUS&lt;div&gt;disconnected&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-72">
+          <mxGeometry y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-70" value="Any state" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="425" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-75" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="LTfjDitk7vakBuSZRTtx-71" target="LTfjDitk7vakBuSZRTtx-74">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-76" value="VBUS&lt;div&gt;connected&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="LTfjDitk7vakBuSZRTtx-75">
+          <mxGeometry x="-0.66" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-71" value="Backup battery mode" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="320" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-74" value="Idle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="410" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-78" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="520" y="60" width="255" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="LTfjDitk7vakBuSZRTtx-79" value="Alarm" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="612.5" y="20.000000000000057" width="70" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -41,18 +41,22 @@ mod app {
     }
 
     #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
         // Initialize the monotonic (core clock at 64 MHz)
         let mono = Systick::new(cx.core.SYST, 64_000_000);
         let port0 = hal::gpio::p0::Parts::new(cx.device.P0);
 
         let  saadc_config = SaadcConfig { 
             resolution: Resolution::_12BIT,
-            oversample: Oversample::OVER8X,
+            oversample: Oversample::BYPASS,
             ..SaadcConfig::default()
         };
         let saadc = Saadc::new(cx.device.SAADC, saadc_config);
         let saadc_pin = port0.p0_03;
+
+        // Enable cycle counter
+        cx.core.DCB.enable_trace();
+        cx.core.DWT.enable_cycle_counter();
 
         read_thermistor::spawn().unwrap();
         (Shared {}, Local {saadc, saadc_pin}, init::Monotonics(mono))
@@ -68,14 +72,23 @@ mod app {
     }
 
     #[task(local = [saadc, saadc_pin])]
-    fn read_thermistor(_cx: read_thermistor::Context) {
+    fn read_thermistor(cx: read_thermistor::Context) {
         rprintln!("read_thermistor");
-        let saadc = _cx.local.saadc;
-        let saadc_pin = _cx.local.saadc_pin;
+        let saadc = cx.local.saadc;
+        let saadc_pin = cx.local.saadc_pin;
+        let before = cortex_m::peripheral::DWT::cycle_count();
+        
+        // NOTE: This is a blocking call, we should measure it
         let adc_value = saadc.read_channel(saadc_pin).unwrap();
+        let after = cortex_m::peripheral::DWT::cycle_count();
+        let elapsed_cycles = after.wrapping_sub(before);
+        let elapsed_us = elapsed_cycles / 64; // 64 cycles per microsecond
+        rprintln!("elapsed_us: {}", elapsed_us);
+        rprintln!("elapsed_cycles: {}", elapsed_cycles);
+        
 
         let temperature = calculate_temperature(adc_value);
-        rprintln!("Temperature: {:.2} C", temperature);
+        rprintln!("Temperature: {:.1} C", temperature);
 
         read_thermistor::spawn_after(1000_u64.millis()).unwrap();
     }  
