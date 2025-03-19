@@ -2,7 +2,7 @@ use {
     crate::{app::*, rtc::*},
     core::fmt::Write,
     embedded_graphics::{
-        mono_font::{ascii::FONT_10X20, MonoTextStyle},
+        mono_font::MonoTextStyle,
         pixelcolor::BinaryColor,
         prelude::*,
         text::Text,
@@ -23,7 +23,6 @@ use {
 const TIME_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_24_POINT, BinaryColor::On);
 const TEMP_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_14_POINT, BinaryColor::On);
 
-//const FONT_SIZE: Point = Point::new(10, 20);
 const FONT_SIZE: Point = Point::new(16, 29);
 
 const TIME_POSITION: Point = Point::new(24, 20);
