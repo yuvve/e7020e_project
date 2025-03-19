@@ -170,3 +170,13 @@
   - add CLI example
 - Simon:
   - Add separate PWM sequences for LED, amp/fan/hum and haptic actuator
+
+## 19.03
+
+- Yuval:
+  - Worked on fixing minor bugs and finalizing the case
+- Calle:
+  - Created three cases with accompanying rotary buttons and worked on getting the speaker to function
+- Simon:
+  - Worked on fixing minor bugs and finalizing the case
+ 
