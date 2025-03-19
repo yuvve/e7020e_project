@@ -4,11 +4,11 @@ Look at the CHANGELOG for each person's contributions.
 - [x] Real-time clock (RTC) based on 32kHz crystal
 - [x] At least one function button
 - [x] PWM modulated LED with transistor driver
-- [ ] Sound on alarm, e.g., buzzer
+- [x] Sound on alarm, e.g., buzzer
 - [x] Analog input, e.g., temperature/supply voltage
 - [x] Serial communication interface e.g., using dev-kit, Virtual Com Port (VCP)
-- [ ] Command Line Interface (CLI) for simple host interaction
-- [/] Display that shows current time
+- [x] Command Line Interface (CLI) for simple host interaction
+- [x] Display that shows current time
 
 ## Extra Grade 4
 - [x] Humidifier SW
@@ -21,11 +21,11 @@ Look at the CHANGELOG for each person's contributions.
 - [x] Rotary encoder HW
 - [x] Fan HW
 - [x] Fan SW
-- [/] Temperature on display SW
+- [x] Temperature on display SW
 
 ## Extra Grade 5
 - [x] Speaker HW
-- [ ] Speaker SW
+- [/] Speaker SW
 - [x] Humidifier HW
 - [ ] Power optimization SW
 - [x] Rotary encoder SW
