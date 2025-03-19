@@ -89,4 +89,24 @@ Besides mandatory functionality the Final Countdown features:
 
 ## SW References
 
-- Crates used in the project...
+**Crates/dependencies used in the project:**
+
+- [heapless](https://crates.io/crates/heapless/0.7.16)  
+- [cortex-m](https://docs.rs/cortex-m) 
+- [cortex-m-rtic](https://crates.io/crates/cortex-m-rtic/1.1.4) 
+- [cortex-m-rt](https://crates.io/crates/cortex-m-rt/0.7.3)  
+- [embedded-hal](https://crates.io/crates/embedded-hal/0.2.7) 
+- [panic-rtt-target](https://crates.io/crates/panic-rtt-target/0.2.0)
+- [panic-halt](https://crates.io/crates/panic-halt/1.0.0) 
+- [rtt-target](https://crates.io/crates/rtt-target/0.6.1)
+- [systick-monotonic](https://crates.io/crates/systick-monotonic/1.0.0) 
+- [dwt-systick-monotonic](https://crates.io/crates/dwt-systick-monotonic/1.0.0)
+- [nb](https://crates.io/crates/nb/1.1.0) 
+- [usb-device](https://crates.io/crates/usb-device/0.3.2) 
+- [usbd-serial](https://crates.io/crates/usbd-serial/0.2.2) 
+- [usbd-hid](https://crates.io/crates/usbd-hid/0.8.2)
+- [embedded-graphics](https://crates.io/crates/embedded-graphics/0.8.1) 
+- [ssd1306](https://crates.io/crates/ssd1306/0.9.0) 
+- [libm](https://crates.io/crates/libm/0.2.11) 
+- [profont](https://crates.io/crates/profont/0.7.0) 
+- [nrf52833-hal](https://crates.io/crates/nrf52833-hal/0.18.0) 
