@@ -58,6 +58,24 @@ mod app {
         let fan_pin: Pin<Output<PushPull>> =
             port0.p0_10.into_push_pull_output(Level::Low).degrade();
 
+        // Check if UICR is set correctly
+        let check_uicr_set = cx.device.UICR.nfcpins.read().protect().is_disabled();
+
+        // Set NFC pins to normal GPIO
+        if !check_uicr_set {
+            cx.device.NVMC.config.write(|w| w.wen().wen());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+            
+            cx.device.UICR.nfcpins.write(|w| w.protect().disabled());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            cx.device.NVMC.config.write(|w| w.wen().ren());
+            while cx.device.NVMC.ready.read().ready().is_busy() {}
+
+            // Changes to UICR require a reset to take effect
+            cortex_m::peripheral::SCB::sys_reset();
+        }
+
         // Configure PWM
         let pwm = Pwm::new(cx.device.PWM0);
         pwm.set_prescaler(Prescaler::Div16); // => ~1 kHz if 16 MHz base
