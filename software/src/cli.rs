@@ -1,8 +1,12 @@
 use {
-    core::fmt::Write,
-    rtic::Mutex,
     crate::app::*,
     panic_rtt_target as _,
+};
+
+#[cfg(feature = "52833-debug")]
+use {
+    core::fmt::Write,
+    rtic::Mutex,
 };
 
 pub const DATA_OUT_BUFFER_SIZE: usize = 64;
@@ -15,9 +19,12 @@ pub(crate) enum CliCommand {
     GetAlarm,
 }
 
+#[allow(unused_mut)]
+#[allow(unused_variables)]
 pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
     match command {
         CliCommand::SetTime(hour, minute) => {
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Set time: {:02}:{:02}", hour, minute).ok();
             });
@@ -31,6 +38,7 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             write_to_serial(&data);
         }
         CliCommand::SetAlarm(hour, minute) => {
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Set alarm: {:02}:{:02}", hour, minute).ok();
             });
@@ -44,6 +52,7 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             write_to_serial(&data);
         }
         CliCommand::GetTime => {
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Get time").ok();
             });
@@ -57,6 +66,7 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             write_to_serial(&data);
         }
         CliCommand::GetAlarm => {
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Get alarm").ok();
             });
@@ -150,6 +160,7 @@ pub(crate) fn write_to_serial(data: &[u8]) {
     data_out::spawn(data_out, len+1).unwrap();
 }
 
+#[allow(unused_mut)]
 pub(crate) fn data_out(mut cx: data_out::Context, data: [u8; DATA_OUT_BUFFER_SIZE], len: usize) {
     let serial = cx.shared.serial;
     let usb_dev = cx.shared.usb_dev;
@@ -159,6 +170,7 @@ pub(crate) fn data_out(mut cx: data_out::Context, data: [u8; DATA_OUT_BUFFER_SIZ
             usb_dev.poll(&mut [serial]);
         }
         Err(_) => {
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Error writing data").ok();
             });
@@ -166,6 +178,7 @@ pub(crate) fn data_out(mut cx: data_out::Context, data: [u8; DATA_OUT_BUFFER_SIZ
     }
 }
 
+#[allow(unused_mut)]
 pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
     let len = cx.local.len;
     let data_arr = cx.local.data_arr;
@@ -173,6 +186,7 @@ pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
     match data {
         13 => {
             let slice = &data_arr[0..*len];
+            #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
                 writeln!(rtt_serial, "Received: {:?}", core::str::from_utf8(slice)).ok();
             });
@@ -180,6 +194,7 @@ pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
             if let Some(command) = parse_serial_cmd(slice) {
                 cli_commands::spawn(command).ok();
             } else {
+                #[cfg(feature = "52833-debug")]
                 cx.shared.rtt_serial.lock(|rtt_serial| {
                     writeln!(rtt_serial, "Invalid command").ok();
                 });
@@ -193,6 +208,7 @@ pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
             if *len < data_arr.len() - 1 {
                 *len += 1;
             } else {
+                #[cfg(feature = "52833-debug")]
                 cx.shared.rtt_serial.lock(|rtt_serial| {
                     writeln!(rtt_serial, "Buffer full, discarding data").ok();
                 });
@@ -202,7 +218,9 @@ pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
     }
 }
 
+#[allow(unused_mut)]
 pub(crate) fn usb_fs(mut cx: usb_fs::Context) {
+    #[cfg(feature = "52833-debug")]
     cx.shared.rtt_hw.lock(|rtt_hw| {
         writeln!(rtt_hw, "USBD interrupt").ok();
     });

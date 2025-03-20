@@ -6,12 +6,14 @@ use {
         pac::I2S,
     },
     nrf52833_hal as hal,
-    rtt_target::rprintln,
 };
 
-const WAV_RAW: &[u8] = include_bytes!("../assets/SeaBreeze3.wav");
+#[cfg(feature = "52833-debug")]
+use core::fmt::Write;
+
+const WAV_RAW: &[u8] = include_bytes!("../assets/Silent.wav");
 const WAV_HEADER_SIZE: usize = 44;
-const SEGMENT_SIZE: usize = 1024;
+const SEGMENT_SIZE: usize = 4;
 pub const BUFFER_LEN: usize = SEGMENT_SIZE / 4;
 
 pub(crate) fn init(i2s: I2S, pins: Pins) -> hal::i2s::I2S {
@@ -27,7 +29,7 @@ pub(crate) fn init(i2s: I2S, pins: Pins) -> hal::i2s::I2S {
     i2s
 }
 
-pub(crate) fn next_segment(cx: next_segment::Context) {
+pub(crate) fn next_segment(cx: play_next_audio_segment::Context) {
     if !cx.shared.amp_on.load(Ordering::Relaxed) {
         return;
     }
@@ -36,14 +38,17 @@ pub(crate) fn next_segment(cx: next_segment::Context) {
     let pcm_raw = &WAV_RAW[WAV_HEADER_SIZE..];
     let num_segments = pcm_raw.len() / SEGMENT_SIZE;
 
-    let mut seg_index = *cx.local.segment_index as usize;
-    seg_index = if seg_index + 1 >= num_segments {
+    let curr_segment = *cx.local.segment_index;
+    let seg_index = *cx.local.segment_index as usize;
+
+    *cx.local.segment_index = if curr_segment + 1 >= num_segments as u32 {
         0
     } else {
-        seg_index + 1
+        curr_segment + 1
     };
 
-    rprintln!("Playing segment {}", seg_index);
+    #[cfg(feature = "52833-debug")]
+    writeln!(cx.local.rtt_speaker, "Playing segment {}", seg_index).ok();
 
     let start = seg_index * SEGMENT_SIZE;
     let end = start + SEGMENT_SIZE;
@@ -68,9 +73,10 @@ pub(crate) fn next_segment(cx: next_segment::Context) {
 
     let (_returned_buffer, new_i2s) = transfer.wait();
 
-    rprintln!("Completed segment {}", seg_index);
+    #[cfg(feature = "52833-debug")]
+    writeln!(cx.local.rtt_speaker, "Completed segment {}", seg_index).ok();
 
     *cx.local.i2s = Some(new_i2s);
 
-    next_segment::spawn().ok();
+    play_next_audio_segment::spawn().ok();
 }

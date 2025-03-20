@@ -8,8 +8,10 @@ use {
         qdec::*,
     },
     nrf52833_hal as hal,
-    core::fmt::Write,
 };
+
+#[cfg(feature = "52833-debug")]
+use core::fmt::Write;
 
 const ROTARY_ENCODER_THRESHOLD_SEC: f32 = 0.1;
 const LONG_PRESS_THRESHOLD_SEC: f32 = 1.0;
@@ -42,12 +44,14 @@ pub(crate) fn init(
 }
 
 pub(crate) fn handle_qdec_interrupt(mut cx: qdec_interrupt::Context) {
+    #[cfg(feature = "52833-debug")]
     cx.shared.rtt_hw.lock(|rtt_hw| {
         writeln!(rtt_hw, "QDEC interrupt").ok();
     });
-    let qdec = cx.local.qdec;
-    qdec.reset_events();
-    let direction = -qdec.read(); // Inverted direction
+    let direction = cx.shared.qdec.lock(|qdec| {
+        qdec.reset_events();
+        -qdec.read() // Inverted direction
+    });
 
     let now = cortex_m::peripheral::DWT::cycle_count();
     let elapsed_cycles = now.wrapping_sub(*cx.local.last_rotation);
@@ -62,6 +66,7 @@ pub(crate) fn handle_qdec_interrupt(mut cx: qdec_interrupt::Context) {
 }
 
 pub(crate) fn handle_gpiote_interrupt(mut cx: gpiote_interrupt::Context) {
+    #[cfg(feature = "52833-debug")]
     cx.shared.rtt_hw.lock(|rtt_hw| {
         writeln!(rtt_hw, "GPIOTE interrupt").ok();
     });
@@ -92,14 +97,22 @@ pub(crate) fn handle_gpiote_interrupt(mut cx: gpiote_interrupt::Context) {
     }});
 }
 
-pub(crate) fn disable_interrupts(mut cx: gpiote_disable_interrupts::Context) {
+pub(crate) fn disable_interrupts(mut cx: rotary_disable_interrupts::Context) {
     cx.shared.gpiote.lock(|gpiote| {
         gpiote.port().disable_interrupt();
     }); 
+    cx.shared.qdec.lock(|qdec| {
+        qdec.disable_interrupt();
+    });
 }
 
-pub(crate) fn enable_interrupts(mut cx: gpiote_enable_interrupts::Context) {
+pub(crate) fn enable_interrupts(mut cx: rotary_encoder_enable_interrupts::Context) {
     cx.shared.gpiote.lock(|gpiote| {
         gpiote.port().enable_interrupt();
     }); 
+    cx.shared.qdec.lock(|qdec| {
+        qdec.enable_interrupt(NumSamples::_1smpl)
+            .debounce(true)
+            .enable();
+    });
 }

@@ -1,6 +1,6 @@
 #![no_main]
 #![no_std]
-#![deny(warnings)]
+//#![deny(warnings)]
 
 use cortex_m::singleton;
 use nrf52833_hal as hal;

@@ -8,11 +8,11 @@ use {
     nrf52833_hal as hal,
 };
 
-const SEQUENCE_LENGTH: usize = 1000;
+pub const SEQUENCE_LENGTH: usize = 1000;
 const SEQ_REFRESH: u32 = 10; // Extra periods per step
 const MAX_DUTY: u16 = 10000;
 
-pub type SeqBuffer = &'static mut [u16; 400];
+pub type SeqBuffer = &'static mut [u16; 4*SEQUENCE_LENGTH];
 pub type Pwm0 = Option<PwmSeq<PWM0, SeqBuffer, SeqBuffer>>;
 
 pub(crate) fn init(
@@ -40,7 +40,7 @@ pub(crate) fn load_pwm_sequence(cx: load_pwm_sequence::Context) {
     let seqbuf0 = buf0.unwrap();
     let seqbuf1 = buf1.unwrap();
 
-    for i in 0..100 {
+    for i in 0..SEQUENCE_LENGTH {
         seqbuf0[i * 4] = LED_SEQUENCE[i];
         seqbuf0[i * 4 + 1] = HAPTIC_SEQUENCE[i];
         seqbuf0[i * 4 + 2] = EMPTY_SEQUENCE[i];

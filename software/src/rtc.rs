@@ -4,22 +4,24 @@ use {
     hal::{pac::RTC1, rtc::*},
     nrf52833_hal as hal,
     rtic::Mutex,
-    core::fmt::Write,
 };
+
+#[cfg(feature = "52833-debug")]
+use core::fmt::Write;
 
 const RTC_PRESCALER: u32 = 4095; // 8 Hz RTC frequency, max prescaler value
 const MAX_TICKS: u32 = 16_777_216; // 24 bit max value for RTC counter
 pub const TICKS_PER_SECOND: u32 = 8;
-pub const TICKS_PER_MINUTE: u32 = TICKS_PER_SECOND;// * 60; // Interrupt every second for demonstration purpose, will be 8*60 in production
+pub const TICKS_PER_MINUTE: u32 = TICKS_PER_SECOND * 60; // Interrupt every second for demonstration purpose, will be 8*60 in production
 pub const TICKS_PER_HOUR: u32 = TICKS_PER_MINUTE * 60;
 pub const TICKS_PER_DAY: u32 = TICKS_PER_HOUR * 24;
 pub const TIMEOUT_SETTINGS_TICKS: u32 = TICKS_PER_MINUTE * 5; // Timeout after 5 minutes
-pub const BLINK_TICKS: u32 = TICKS_PER_SECOND / 4; // Blink every 0.25 seconds
+pub const BLINK_TICKS: u32 = TICKS_PER_SECOND; // Blink every 1 seconds
 
 pub(crate) fn init(rtc: RTC1) -> Rtc<hal::pac::RTC1> {
     let mut rtc = hal::rtc::Rtc::new(rtc, RTC_PRESCALER).unwrap();
     // Set to interrupt straight away, to initialize the periodic update
-    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_SECOND)
+    rtc.set_compare(RtcCompareReg::Compare0, TICKS_PER_SECOND*2)
         .unwrap();
     rtc.enable_interrupt(RtcInterrupt::Compare0, None);
     rtc.enable_interrupt(RtcInterrupt::Overflow, None);
@@ -28,6 +30,7 @@ pub(crate) fn init(rtc: RTC1) -> Rtc<hal::pac::RTC1> {
 }
 
 pub(crate) fn handle_interrupt(mut cx: rtc_interrupt::Context) {
+    #[cfg(feature = "52833-debug")]
     cx.shared.rtt_hw.lock(|rtt_hw| {
         writeln!(rtt_hw, "RTC interrupt").ok();
     });

@@ -73,6 +73,6 @@ pub(crate) fn turn_on_amp_fan_hum(mut cx: turn_on_amp_fan_hum::Context) {
 
 pub(crate) fn turn_off_amp_fan_hum(mut cx: turn_off_amp_fan_hum::Context) {
     cx.shared.amp_fan_hum_pin.lock(|amp_fan_hum_pin| {
-        amp_fan_hum_pin.set_high().ok();
+        amp_fan_hum_pin.set_low().ok();
     });
 }
