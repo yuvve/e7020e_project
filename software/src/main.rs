@@ -178,7 +178,7 @@ mod app {
         set_time::spawn(time_ticks).ok();
 
         // Simulate user setting the alarm,
-        let alarm_ticks = rtc::time_to_ticks(08, 21);
+        let alarm_ticks = rtc::time_to_ticks(06, 21);
         set_alarm::spawn(alarm_ticks).ok();
 
         let comp = backup_mode::init(cx.device.LPCOMP, pins.vdetect);

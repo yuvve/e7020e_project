@@ -11,7 +11,7 @@ use {
 #[cfg(feature = "52833-debug")]
 use core::fmt::Write;
 
-const WAV_RAW: &[u8] = include_bytes!("../assets/Silent.wav");
+const WAV_RAW: &[u8] = include_bytes!("../assets/SeaBreeze3.wav");
 const WAV_HEADER_SIZE: usize = 44;
 const SEGMENT_SIZE: usize = 4;
 pub const BUFFER_LEN: usize = SEGMENT_SIZE / 4;
@@ -29,7 +29,7 @@ pub(crate) fn init(i2s: I2S, pins: Pins) -> hal::i2s::I2S {
     i2s
 }
 
-pub(crate) fn next_segment(cx: play_next_audio_segment::Context) {
+pub(crate) fn next_segment(mut cx: play_next_audio_segment::Context) {
     if !cx.shared.amp_on.load(Ordering::Relaxed) {
         return;
     }
@@ -47,8 +47,8 @@ pub(crate) fn next_segment(cx: play_next_audio_segment::Context) {
         curr_segment + 1
     };
 
-    #[cfg(feature = "52833-debug")]
-    writeln!(cx.local.rtt_speaker, "Playing segment {}", seg_index).ok();
+    //#[cfg(feature = "52833-debug")]
+    //writeln!(cx.local.rtt_speaker, "Playing segment {}", seg_index).ok();
 
     let start = seg_index * SEGMENT_SIZE;
     let end = start + SEGMENT_SIZE;
@@ -77,6 +77,6 @@ pub(crate) fn next_segment(cx: play_next_audio_segment::Context) {
     writeln!(cx.local.rtt_speaker, "Completed segment {}", seg_index).ok();
 
     *cx.local.i2s = Some(new_i2s);
-
+    cx.local.dma_buf = dma_buf;
     play_next_audio_segment::spawn().ok();
 }
