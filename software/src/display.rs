@@ -144,13 +144,6 @@ pub(crate) fn update_display(
     }
 }
 
-pub(crate) fn clear(mut cx: clear_display::Context) {
-    cx.shared.display.lock(|display| {
-        display.clear(BinaryColor::Off).unwrap();
-        display.flush().unwrap();
-    });
-}
-
 fn format_time(hour: u8, minute: u8) -> (String<10>, String<10>) {
     let mut hour_str: String<10> = String::new();
     let mut minute_str: String<10> = String::new();

@@ -1,6 +1,6 @@
-use rtt_target::{rtt_init, UpChannel, ChannelMode};
+use rtt_target::{rtt_init, UpChannel, ChannelMode, set_print_channel};
 
-pub(crate) fn init() -> (UpChannel, UpChannel, UpChannel, UpChannel, UpChannel) {
+pub(crate) fn init() -> (UpChannel, UpChannel, UpChannel, UpChannel) {
     let channels = rtt_init!(
         up: {
             0 : {
@@ -30,5 +30,6 @@ pub(crate) fn init() -> (UpChannel, UpChannel, UpChannel, UpChannel, UpChannel) 
             }
         }
     );
-    (channels.up.0, channels.up.1, channels.up.2, channels.up.3, channels.up.4)
+    set_print_channel(channels.up.0);
+    (channels.up.1, channels.up.2, channels.up.3, channels.up.4)
 }

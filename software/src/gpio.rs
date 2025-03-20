@@ -1,5 +1,5 @@
 use {
-    crate::{app::*}, embedded_hal::digital::v2::OutputPin, hal::{gpio::{
+    crate::app::*, embedded_hal::digital::v2::OutputPin, hal::{gpio::{
         p0::{Parts as P0Parts, P0_02, P0_03}, p1::Parts as P1Parts, Disconnected, Floating, Input, Level, Output, Pin, PullUp, PushPull
     }, pac::{P0, P1}}, nrf52833_hal::{self as hal}, rtic::Mutex
 };

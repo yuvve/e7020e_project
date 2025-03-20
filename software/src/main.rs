@@ -43,7 +43,7 @@ use {
     },
     nrf52833_hal as hal, 
     panic_rtt_target as _,
-    rtt_target::UpChannel,
+    rtt_target::{rprintln, UpChannel,},
     usb_device::device::UsbDevice,
     usbd_serial::{SerialPort, USB_CLASS_CDC},
 
@@ -53,13 +53,12 @@ use {
     },
 };
 
-#[rtic::app(device = nrf52833_hal::pac, dispatchers= [TEMP, RNG, ECB, FPU, PDM])]
+#[rtic::app(device = nrf52833_hal::pac, dispatchers= [TEMP, RNG, ECB, FPU, PDM, CCM_AAR, SWI5_EGU5])]
 mod app {
     use super::*;
 
     #[shared]
     struct Shared {
-        rtt_general: UpChannel,
         rtt_hw: UpChannel,
         rtt_serial: UpChannel,
         rtc: Rtc<hal::pac::RTC1>,
@@ -98,7 +97,7 @@ mod app {
         usb_bus: Option<UsbBusAllocator<Usbd<UsbPeripheral<'static>>>> = None, 
     ])]
     fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
-        let (rtt_general, rtt_display, rtt_hw, rtt_state, rtt_serial) = rtt::init();
+        let (rtt_display, rtt_hw, rtt_state, rtt_serial) = rtt::init();
 
         let SEQBUF0 = cx.local.SEQBUF0;
         let SEQBUF1 = cx.local.SEQBUF1;
@@ -182,7 +181,6 @@ mod app {
 
         (
             Shared {
-                rtt_general,
                 rtt_serial,
                 rtt_hw,
                 rtc,
@@ -212,11 +210,9 @@ mod app {
         )
     }
 
-    #[idle(shared = [rtt_general])]
-    fn idle(mut cx: idle::Context) -> ! {
-        cx.shared.rtt_general.lock(|rtt_general| {
-            writeln!(rtt_general, "idle").ok();
-        });
+    #[idle]
+    fn idle(_cx: idle::Context) -> ! {
+        rprintln!("idle");
         loop {
             asm::wfi();
         }
@@ -324,12 +320,10 @@ mod app {
                     Settings::AlarmMinutes => {
                         set_alarm::spawn(*cx.local.temp_ticks).ok();
                         disable_blinking::spawn().ok();
-                                update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
+                        update_display::spawn(*cx.local.current_ticks, display::Section::Display, false).ok();
                     }
                 },
-                _ => {
-                    todo!()
-                }
+                _ => {}
             },
             Event::Encoder(EncoderEvent::LongPressed) => match state {
                 State::Idle => {
@@ -377,9 +371,7 @@ mod app {
 
                         update_display::spawn(new_time, display::Section::Display, false).ok();
                     }
-                    _ => {
-                        todo!()
-                    }
+                    _ => {}
                 }
             }
             Event::VBUSConnected => {
@@ -410,9 +402,7 @@ mod app {
                     }
                 }
             }
-            _ => {
-                todo!()
-            }
+            _ => {}
         }
     }
 
@@ -431,142 +421,160 @@ mod app {
         rotary_encoder::handle_gpiote_interrupt(cx);
     }
 
-    #[task(shared = [gpiote, rtt_hw], priority=8)]
-    fn gpiote_disable_interrupts(cx: gpiote_disable_interrupts::Context) {
-        rotary_encoder::disable_interrupts(cx);
-    }
-
-    #[task(shared = [gpiote, rtt_hw])]
-    fn gpiote_enable_interrupts(cx: gpiote_enable_interrupts::Context) {
-        rotary_encoder::enable_interrupts(cx);
-    }
-
-    #[task(binds = COMP_LPCOMP, local=[comp], shared=[rtt_hw])]
+    #[task(binds = COMP_LPCOMP, priority = 7, local = [comp], shared=[rtt_hw])]
     fn comp_lcomp(cx: comp_lcomp::Context) {
         backup_mode::comp_lcomp(cx);
     }
 
-    #[task(priority = 3, shared = [rtc, &time_offset_ticks])]
+    #[task(binds=USBD, priority = 2, shared = [usb_dev, serial, rtt_hw])]
+    fn usb_fs(cx: usb_fs::Context) {
+        cli::usb_fs(cx);
+    }
+
+    #[task(shared = [gpiote, rtt_hw], priority = 7)]
+    fn gpiote_disable_interrupts(cx: gpiote_disable_interrupts::Context) {
+        rotary_encoder::disable_interrupts(cx);
+    }
+
+    #[task(shared = [gpiote, rtt_hw], priority = 5)]
+    fn gpiote_enable_interrupts(cx: gpiote_enable_interrupts::Context) {
+        rotary_encoder::enable_interrupts(cx);
+    }
+
+    #[task(priority = 6, shared = [rtc, &time_offset_ticks])]
     fn set_time(cx: set_time::Context, ticks: u32) {
+        rprintln!("Setting time, ticks: {}", ticks);
         rtc::set_time(cx, ticks);
     }
 
-    #[task(priority = 3, shared = [rtc, &alarm_offset_ticks, &time_offset_ticks])]
+    #[task(priority = 6, shared = [rtc, &alarm_offset_ticks, &time_offset_ticks])]
     fn set_alarm(cx: set_alarm::Context, ticks: u32) {
+        rprintln!("Setting alarm, ticks: {}", ticks);
         rtc::set_alarm(cx, ticks);
     }
 
     #[task(priority = 7, shared = [rtc])]
     fn disable_alarm(cx: disable_alarm::Context) {
+        rprintln!("Disabling alarm");
         rtc::disable_alarm(cx);
     }
 
     #[task(priority = 3, shared = [rtc])]
     fn set_periodic_update(cx: set_periodic_update::Context, interval_minutes: u32) {
+        rprintln!("Setting periodic update, interval_minutes: {}", interval_minutes);
         rtc::set_periodic_update(cx, interval_minutes);
     }
 
     #[task(priority = 7, shared = [rtc])]
     fn disable_periodic_update(cx: disable_periodic_update::Context) {
+        rprintln!("Disabling periodic update");
         rtc::disable_periodic_update(cx);
     }
 
-    #[task(priority = 1, shared = [rtc, &time_offset_ticks])]
+    #[task(priority = 6, shared = [rtc, &time_offset_ticks])]
     fn set_timeout(cx: set_timeout::Context, ticks: u32) {
+        rprintln!("Setting timeout, ticks: {}", ticks);
         rtc::set_timeout(cx, ticks);
     }
 
-    #[task(priority = 7, shared = [rtc])]
+    #[task(priority = 6, shared = [rtc])]
     fn disable_timeout(cx: disable_timeout::Context) {
+        rprintln!("Disabling timeout");
         rtc::disable_timeout(cx);
     }
 
-    #[task(priority = 1, shared = [rtc])]
+    #[task(priority = 6, shared = [rtc])]
     fn set_blinking(cx: set_blinking::Context, interval_ticks: u32) {
+        rprintln!("Setting blinking, interval_ticks: {}", interval_ticks);
         rtc::set_blinking(cx, interval_ticks);
     }
 
     #[task(priority = 7, shared = [rtc])]
     fn disable_blinking(cx: disable_blinking::Context) {
+        rprintln!("disable_blinking");
         rtc::disable_blinking(cx);
     }
 
     #[task(priority = 1, local = [saadc, saadc_pin], shared = [temperature])]
     fn read_temperature(cx: read_temperature::Context) {
+        rprintln!("read_temperature");
         thermistor::read(cx);
     }
 
-    #[task(priority = 1, shared = [pwm])]
+    #[task(priority = 7, shared = [pwm])]
     fn load_pwm_sequence(cx: load_pwm_sequence::Context) {
+        rprintln!("load_pwm_sequence");
         pwm::load_pwm_sequence(cx);
     }
 
-    #[task(priority = 1, shared = [pwm])]
+    #[task(priority = 7, shared = [pwm])]
     fn start_pwm(cx: start_pwm::Context) {
+        rprintln!("start_pwm");
         pwm::start(cx);
     }
 
-    #[task(priority = 1, shared = [pwm])]
+    #[task(priority = 7, shared = [pwm])]
     fn stop_pwm(cx: stop_pwm::Context) {
+        rprintln!("stop_pwm");
         pwm::stop(cx);
     }
 
-    #[task(priority = 3, shared = [display, temperature], local = [on: bool = true, rtt_display])]
+    #[task(priority = 5, shared = [display, temperature], local = [on: bool = true, rtt_display])]
     fn update_display(
         cx: update_display::Context,
         ticks: u32,
         section: display::Section,
         blink: bool,
     ) {
+        rprintln!("update_display");
         //display::update_display_rtt(cx, ticks, section, blink);
         display::update_display(cx, ticks, section, blink);
     }
 
     #[task(priority = 3, shared = [display])]
-    fn clear_display(cx: clear_display::Context) {
-        display::clear(cx);
-    }
-
-    #[task(shared = [display])]
     fn enable_display(cx: enable_display::Context) {
+        rprintln!("enable_display");
         display::enable_display(cx);
     }
 
-    #[task(shared = [display], priority = 7)]
+    #[task(priority = 7, shared = [display])]
     fn disable_display(cx: disable_display::Context) {
+        rprintln!("disable_display");
         display::disable_display(cx);
     }
 
-    #[task(shared = [amp_fan_hum_pin])]
+    #[task(priority = 6, shared = [amp_fan_hum_pin])]
     fn turn_on_amp_fan_hum(cx: turn_on_amp_fan_hum::Context) {
+        rprintln!("turn_on_amp_fan_hum");
         gpio::turn_on_amp_fan_hum(cx);
     }
 
-    #[task(shared = [amp_fan_hum_pin], priority=8)]
+    #[task(priority = 7, shared = [amp_fan_hum_pin])]
     fn turn_off_amp_fan_hum(cx: turn_off_amp_fan_hum::Context) {
+        rprintln!("turn_off_amp_fan_hum");
         gpio::turn_off_amp_fan_hum(cx);
     }
 
-    #[task(shared = [usb_dev, serial, rtt_serial])]
+    #[task(priority = 2, shared = [usb_dev, serial, rtt_serial])]
     fn data_out(cx: data_out::Context, data: [u8; DATA_OUT_BUFFER_SIZE], len: usize) {
+        rprintln!("data_out");
         cli::data_out(cx, data, len);
     }
-    #[task(capacity = 10, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]], shared = [rtt_serial])]
+    #[task(priority = 2, capacity = 10, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]], shared = [rtt_serial])]
     fn data_in(cx: data_in::Context, data: u8){
+        rprintln!("data_in");
         cli::data_in(cx, data);
     }
-    #[task(binds=USBD, shared = [usb_dev, serial])]
-    fn usb_fs(cx: usb_fs::Context) {
-        cli::usb_fs(cx);
-    }
 
-    #[task(priority = 7, shared = [rtt_serial])]
+    #[task(priority = 6, shared = [rtt_serial])]
     fn cli_commands(cx: cli_commands::Context, command: CliCommand) {
+        rprintln!("cli_commands");
         cli::cli_commands(cx, command);
     }
 
-    #[task(priority = 7, shared = [&amp_on], local = [i2s, dma_buf, segment_index: u32 = 0])]
+    #[task(priority = 3, shared = [&amp_on], local = [i2s, dma_buf, segment_index: u32 = 0])]
     fn next_segment(cx: next_segment::Context) {
+        rprintln!("next_segment");
         speaker::next_segment(cx);
     }
 }

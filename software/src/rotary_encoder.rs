@@ -8,6 +8,7 @@ use {
         qdec::*,
     },
     nrf52833_hal as hal,
+    core::fmt::Write,
 };
 
 const ROTARY_ENCODER_THRESHOLD_SEC: f32 = 0.1;
@@ -40,7 +41,10 @@ pub(crate) fn init(
     (qdec, gpiote)
 }
 
-pub(crate) fn handle_qdec_interrupt(cx: qdec_interrupt::Context) {
+pub(crate) fn handle_qdec_interrupt(mut cx: qdec_interrupt::Context) {
+    cx.shared.rtt_hw.lock(|rtt_hw| {
+        writeln!(rtt_hw, "QDEC interrupt").ok();
+    });
     let qdec = cx.local.qdec;
     qdec.reset_events();
     let direction = -qdec.read(); // Inverted direction
@@ -58,6 +62,9 @@ pub(crate) fn handle_qdec_interrupt(cx: qdec_interrupt::Context) {
 }
 
 pub(crate) fn handle_gpiote_interrupt(mut cx: gpiote_interrupt::Context) {
+    cx.shared.rtt_hw.lock(|rtt_hw| {
+        writeln!(rtt_hw, "GPIOTE interrupt").ok();
+    });
     let now = cortex_m::peripheral::DWT::cycle_count();
     let elapsed_cycles = now.wrapping_sub(*cx.local.last_press);
     let elapsed_time = elapsed_cycles as f32 / 64_000_000.0;

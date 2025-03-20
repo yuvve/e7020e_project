@@ -202,7 +202,10 @@ pub(crate) fn data_in(mut cx: data_in::Context, data: u8) {
     }
 }
 
-pub(crate) fn usb_fs(cx: usb_fs::Context) {
+pub(crate) fn usb_fs(mut cx: usb_fs::Context) {
+    cx.shared.rtt_hw.lock(|rtt_hw| {
+        writeln!(rtt_hw, "USBD interrupt").ok();
+    });
     let usb_dev = cx.shared.usb_dev;
     let serial = cx.shared.serial;
     
