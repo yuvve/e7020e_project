@@ -1,6 +1,5 @@
 use {
-    crate::app::*,
-    panic_rtt_target as _,
+    crate::{app::*, rtc, display}, core::sync::atomic::Ordering,panic_rtt_target as _
 };
 
 #[cfg(feature = "52833-debug")]
@@ -36,6 +35,10 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             data[0..12].copy_from_slice(msg);
             data[12..17].copy_from_slice(&time);
             write_to_serial(&data);
+            
+            let ticks = rtc::time_to_ticks(hour, minute);
+            set_time::spawn(ticks).ok();
+            update_display::spawn(ticks, display::Section::Display, false).ok();
         }
         CliCommand::SetAlarm(hour, minute) => {
             #[cfg(feature = "52833-debug")]
@@ -50,15 +53,21 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             data[0..13].copy_from_slice(msg);
             data[13..18].copy_from_slice(&time);
             write_to_serial(&data);
+
+            let ticks = rtc::time_to_ticks(hour, minute);
+            set_alarm::spawn(ticks).ok();
         }
         CliCommand::GetTime => {
+            let curr_time_ticks = cx.shared.time_offset_ticks.load(Ordering::Relaxed);
+            let (hour, minute) = rtc::ticks_to_time(curr_time_ticks);
+
             #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
-                writeln!(rtt_serial, "Get time").ok();
+                writeln!(rtt_serial, "Get time: {:02}:{:02}", hour, minute).ok();
             });
 
             let mut time = [0u8; 5];
-            time_formatter(0, 0, &mut time);
+            time_formatter(hour, minute, &mut time);
             let msg = b"Current time: ";
             let mut data = [0u8; 19];
             data[0..14].copy_from_slice(msg);
@@ -66,13 +75,16 @@ pub(crate) fn cli_commands(mut cx: cli_commands::Context, command: CliCommand) {
             write_to_serial(&data);
         }
         CliCommand::GetAlarm => {
+            let curr_alarm_ticks = cx.shared.alarm_offset_ticks.load(Ordering::Relaxed);
+            let (hour, minute) = rtc::ticks_to_time(curr_alarm_ticks);
+
             #[cfg(feature = "52833-debug")]
             cx.shared.rtt_serial.lock(|rtt_serial| {
-                writeln!(rtt_serial, "Get alarm").ok();
+                writeln!(rtt_serial, "Get alarm: {:02}:{:02}", hour, minute).ok();
             });
 
             let mut time = [0u8; 5];
-            time_formatter(0, 0, &mut time);
+            time_formatter(hour, minute, &mut time);
             let msg = b"Current alarm: ";
             let mut data = [0u8; 20];
             data[0..15].copy_from_slice(msg);

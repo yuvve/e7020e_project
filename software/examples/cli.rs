@@ -249,7 +249,7 @@ mod app {
         }
     }
 
-    #[task(capacity = 10, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]])]
+    #[task(capacity = 20, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]])]
     fn data_in(cx: data_in::Context, data: u8) {
         let len = cx.local.len;
         let data_arr = cx.local.data_arr;

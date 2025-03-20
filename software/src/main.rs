@@ -178,7 +178,7 @@ mod app {
         set_time::spawn(time_ticks).ok();
 
         // Simulate user setting the alarm,
-        let alarm_ticks = rtc::time_to_ticks(06, 21);
+        let alarm_ticks = rtc::time_to_ticks(08, 21);
         set_alarm::spawn(alarm_ticks).ok();
 
         let comp = backup_mode::init(cx.device.LPCOMP, pins.vdetect);
@@ -600,14 +600,14 @@ mod app {
         rprintln!("data_out");
         cli::data_out(cx, data, len);
     }
-    #[task(priority = 3, capacity = 10, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]], shared = [rtt_serial])]
+    #[task(priority = 3, capacity = 20, local = [len: usize = 0, data_arr :[u8; DATA_IN_BUFFER_SIZE] = [0; DATA_IN_BUFFER_SIZE]], shared = [rtt_serial])]
     fn data_in(cx: data_in::Context, data: u8){
         #[cfg(feature = "52833-debug")]
         rprintln!("data_in");
         cli::data_in(cx, data);
     }
 
-    #[task(priority = 3, shared = [rtt_serial])]
+    #[task(priority = 3, shared = [rtt_serial, &time_offset_ticks, &alarm_offset_ticks])]
     fn cli_commands(cx: cli_commands::Context, command: CliCommand) {
         #[cfg(feature = "52833-debug")]
         rprintln!("cli_commands");
