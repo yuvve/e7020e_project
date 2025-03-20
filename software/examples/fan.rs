@@ -45,10 +45,15 @@ mod app {
     struct Local {
         current_percent: u8,
     }
-
-    #[init]
+    #[init(local = [
+        SEQBUF0: [u16; 400] = [0u16; 400],
+        SEQBUF1: [u16; 400] = [0u16; 400]
+    ])]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let mono = Systick::new(cx.core.SYST, 64_000_000);
+        let SEQBUF0 = cx.local.SEQBUF0;
+        let SEQBUF1 = cx.local.SEQBUF1;
+
 
         rtt_init_print!();
         rprintln!("init");
@@ -89,70 +94,7 @@ mod app {
         }
     }
 
-    /// Ramps the fan from 0% to 100%.  
-    /// Once at 100%, spawns `fan_running` to check timer for turn-off condition.
-    #[task(shared = [pwm, timer_value], local = [current_percent])]
-    fn ramp_up(mut cx: ramp_up::Context) {
-        let percent = cx.local.current_percent;
 
-        if *percent < 100 {
-            *percent += STEP_PERCENT;
-            if *percent > 100 {
-                *percent = 100;
-            }
-
-            let duty_val = percent_to_duty(*percent);
-
-            // Lock PWM to set new duty
-            cx.shared.pwm.lock(|pwm| {
-                pwm.set_duty_off(Channel::C0, duty_val);
-            });
-            let approx_rpm = percent_to_rpm(*percent);
-
-            rprintln!(
-                "Fan speed: {}% duty={} -> ~{} RPM",
-                *percent,
-                duty_val,
-                approx_rpm
-            );
-
-            // Re-spawn until we hit 100%
-            if *percent < 100 {
-                ramp_up::spawn_after(RAMP_STEP_MS.millis()).unwrap();
-            } else {
-                rprintln!("Reached full speed! Starting fan_running loop...");
-                fan_running::spawn_after(FAN_RUNNING_MS.millis()).unwrap();
-            }
-        }
-    }
-
-    /// Loops while fan is at 100% and checks timer_value for turn-off.
-    #[task(shared = [pwm, timer_value])]
-    fn fan_running(mut cx: fan_running::Context) {
-        let mut turn_off = false;
-        cx.shared.timer_value.lock(|timer_val| {
-            *timer_val += 1;
-            if *timer_val >= TURN_OFF_THRESH {
-                rprintln!("Turning off");
-                turn_off = true;
-            }
-        });
-
-        if turn_off {
-            cx.shared.pwm.lock(|pwm| {
-                pwm.set_duty_off(Channel::C0, 0);
-            });
-        } else {
-            cx.shared.timer_value.lock(|val| {
-            rprintln!(
-                "Fan at 100%. timer_value={} threshold={}",                    
-                *val,
-                TURN_OFF_THRESH
-            );
-        });
-            fan_running::spawn_after(FAN_RUNNING_MS.millis()).unwrap();
-        }
-    }
 }
 
 /// Convert a 0–100% speed to a PWM duty register value
