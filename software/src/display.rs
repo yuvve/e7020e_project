@@ -16,7 +16,6 @@ use {
     panic_rtt_target as _,
     profont::*,
     rtic::Mutex,
-    rtt_target::rprintln,
     ssd1306::{mode::BufferedGraphicsMode, prelude::*, I2CDisplayInterface, Ssd1306},
 };
 
@@ -53,6 +52,7 @@ pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display {
     disp.init().unwrap();
     disp.clear(BinaryColor::Off).unwrap();
     disp.flush().unwrap();
+
     disp
 }
 
@@ -69,25 +69,25 @@ pub(crate) fn update_display_rtt(
     if blink && !*cx.local.on {
         match section {
             Section::Hour => {
-                rprintln!("   :{:02}     {:.1} C", minute, temperature);
+                writeln!(cx.local.rtt_display, "   :{:02}     {:.1} C", minute, temperature).ok();
             }
             Section::Minute => {
-                rprintln!(" {:02}:       {:.1} C", hour, temperature);
+                writeln!(cx.local.rtt_display, " {:02}:       {:.1} C", hour, temperature).ok();
             }
             Section::Display => {
-                rprintln!("(super gentle alarm)");
+                writeln!(cx.local.rtt_display, "(super gentle alarm)").ok();
             }
             Section::AlarmIcon => {
-                rprintln!(" {:02}:{:02}     {:.1} C  {}", hour, minute, temperature, ALARM_STRING);
+                writeln!(cx.local.rtt_display, " {:02}:{:02}     {:.1} C  {}", hour, minute, temperature, ALARM_STRING).ok();
             }
         }
     } else {
-        rprintln!(
+        writeln!(cx.local.rtt_display, 
             " {:02}:{:02}     {:.1} C",
             hour,
             minute,
             temperature
-        );
+        ).ok();
     }
 
     if blink {
@@ -226,4 +226,16 @@ fn draw_alarm_icon(
     Text::new(ALARM_STRING, ALARM_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
+}
+
+pub(crate) fn disable_display(mut cx: disable_display::Context) {
+    cx.shared.display.lock(|disp| {
+        disp.set_display_on(false).ok();
+    });
+}
+
+pub(crate) fn enable_display(mut cx: enable_display::Context) {
+    cx.shared.display.lock(|disp| {
+        disp.set_display_on(true).ok();
+    });
 }

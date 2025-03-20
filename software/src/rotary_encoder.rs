@@ -1,5 +1,6 @@
 use {
     crate::{app::*, state_machine::*},
+    rtic::Mutex,
     hal::{
         gpio::{Input, Pin, PullUp},
         gpiote::*,
@@ -56,9 +57,7 @@ pub(crate) fn handle_qdec_interrupt(cx: qdec_interrupt::Context) {
     }
 }
 
-pub(crate) fn handle_gpiote_interrupt(cx: gpiote_interrupt::Context) {
-    let gpiote = cx.local.gpiote;
-
+pub(crate) fn handle_gpiote_interrupt(mut cx: gpiote_interrupt::Context) {
     let now = cortex_m::peripheral::DWT::cycle_count();
     let elapsed_cycles = now.wrapping_sub(*cx.local.last_press);
     let elapsed_time = elapsed_cycles as f32 / 64_000_000.0;
@@ -69,11 +68,13 @@ pub(crate) fn handle_gpiote_interrupt(cx: gpiote_interrupt::Context) {
     }
 
     // Press event
+    cx.shared.gpiote.lock(|gpiote| {
     if gpiote.channel0().is_event_triggered() {
         gpiote.channel0().reset_events();
         *cx.local.last_press = now;
-    }
+    }});
     // Release event
+    cx.shared.gpiote.lock(|gpiote| {
     if gpiote.channel1().is_event_triggered() {
         gpiote.channel1().reset_events();
 
@@ -81,5 +82,17 @@ pub(crate) fn handle_gpiote_interrupt(cx: gpiote_interrupt::Context) {
             true => state_machine::spawn(Event::Encoder(EncoderEvent::LongPressed)).ok(),
             false => state_machine::spawn(Event::Encoder(EncoderEvent::ShortPressed)).ok(),
         };
-    }
+    }});
+}
+
+pub(crate) fn disable_interrupts(mut cx: gpiote_disable_interrupts::Context) {
+    cx.shared.gpiote.lock(|gpiote| {
+        gpiote.port().disable_interrupt();
+    }); 
+}
+
+pub(crate) fn enable_interrupts(mut cx: gpiote_enable_interrupts::Context) {
+    cx.shared.gpiote.lock(|gpiote| {
+        gpiote.port().enable_interrupt();
+    }); 
 }
