@@ -16,7 +16,7 @@ pub const TICKS_PER_MINUTE: u32 = TICKS_PER_SECOND * 60; // Interrupt every seco
 pub const TICKS_PER_HOUR: u32 = TICKS_PER_MINUTE * 60;
 pub const TICKS_PER_DAY: u32 = TICKS_PER_HOUR * 24;
 pub const TIMEOUT_SETTINGS_TICKS: u32 = TICKS_PER_MINUTE * 5; // Timeout after 5 minutes
-pub const BLINK_TICKS: u32 = TICKS_PER_SECOND; // Blink every 1 seconds
+pub const BLINK_TICKS: u32 = TICKS_PER_SECOND/2; // Blink every 1 seconds
 
 pub(crate) fn init(rtc: RTC1) -> Rtc<hal::pac::RTC1> {
     let mut rtc = hal::rtc::Rtc::new(rtc, RTC_PRESCALER).unwrap();

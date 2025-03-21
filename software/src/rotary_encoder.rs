@@ -14,7 +14,7 @@ use {
 use core::fmt::Write;
 
 const ROTARY_ENCODER_THRESHOLD_SEC: f32 = 0.1;
-const LONG_PRESS_THRESHOLD_SEC: f32 = 1.0;
+const LONG_PRESS_THRESHOLD_SEC: f32 = 0.5;
 const DEBOUNCE_THRESHOLD_SEC: f32 = 0.1;
 
 pub(crate) fn init(
@@ -61,6 +61,10 @@ pub(crate) fn handle_qdec_interrupt(mut cx: qdec_interrupt::Context) {
     if !(elapsed_time <= ROTARY_ENCODER_THRESHOLD_SEC) {
         *cx.local.last_rotation = now;
 
+        let direction = match direction > 0 {
+            true => 1,
+            false => -1,
+        };
         state_machine::spawn(Event::Encoder(EncoderEvent::Rotated(direction as isize))).ok();
     }
 }

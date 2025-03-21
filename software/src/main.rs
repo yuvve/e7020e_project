@@ -227,7 +227,7 @@ mod app {
     }
 
     #[task(
-        priority = 2, 
+        priority = 4, 
         capacity = 10, 
         local = [state_machine, current_ticks: u32 = 0, temp_ticks: u32 = 0, rtt_state], 
         shared = [&time_offset_ticks, &alarm_offset_ticks, &amp_on])]
@@ -329,6 +329,7 @@ mod app {
                 }
                 State::Settings(settings) => match settings {
                     Settings::ClockMinutes => {
+                        *cx.local.current_ticks = *cx.local.temp_ticks;
                         disable_blinking::spawn().ok();
                         set_time::spawn(*cx.local.temp_ticks).ok();
                         set_alarm::spawn(cx.shared.alarm_offset_ticks.load(Ordering::Relaxed)).ok();
@@ -370,28 +371,24 @@ mod app {
                                 let temp = *cx.local.temp_ticks;
                                 let new_time = (temp as isize + diff).rem_euclid(rtc::TICKS_PER_DAY as isize) as u32;
                                 *cx.local.temp_ticks = new_time;
-                                update_display::spawn(new_time, display::Section::Display, false).ok();
                             }
                             Settings::ClockMinutes => {
                                 diff = diff * rtc::TICKS_PER_MINUTE as isize;
                                 let temp = *cx.local.temp_ticks;
                                 let new_time = (temp as isize + diff).rem_euclid(rtc::TICKS_PER_DAY as isize) as u32;
                                 *cx.local.temp_ticks = new_time;
-                                update_display::spawn(new_time, display::Section::Display, false).ok();
                             }
                             Settings::AlarmHours => {
                                 diff = diff * rtc::TICKS_PER_HOUR as isize;
                                 let temp = *cx.local.temp_ticks;
                                 let new_time = (temp as isize + diff).rem_euclid(rtc::TICKS_PER_DAY as isize) as u32;
                                 *cx.local.temp_ticks = new_time;
-                                update_display::spawn(new_time, display::Section::Display, false).ok();
                             }
                             Settings::AlarmMinutes => {
                                 diff = diff * rtc::TICKS_PER_MINUTE as isize;
                                 let temp = *cx.local.temp_ticks;
                                 let new_time = (temp as isize + diff).rem_euclid(rtc::TICKS_PER_DAY as isize) as u32;
                                 *cx.local.temp_ticks = new_time;
-                                update_display::spawn(new_time, display::Section::Display, false).ok();
                             }
                         }
                     }
