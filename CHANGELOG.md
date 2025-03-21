@@ -179,4 +179,5 @@
   - Created three cases with accompanying rotary buttons and worked on getting the speaker to function
 - Simon:
   - Worked on fixing minor bugs and finalizing the case
+  - Finished display integration
  
