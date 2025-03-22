@@ -53,6 +53,7 @@ optional = true
 [features]
 #52840 = ["nrf52840-hal"]
 52833 = ["nrf52833-hal"]
+52833-debug = ["nrf52833-hal"]
 default = ["52833"]
 
 [profile.dev]

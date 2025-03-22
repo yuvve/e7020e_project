@@ -78,7 +78,6 @@ mod app {
         let pwm = cx.local.pwm;
         let duty = *cx.local.duty;
         let increasing = *cx.local.increasing;
-        
         if !increasing && duty <= DUTY_STEP {
             *cx.local.increasing = true;
         } else if duty >= DUTY_TURNAROUND {

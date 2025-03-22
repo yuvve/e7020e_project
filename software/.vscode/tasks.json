@@ -70,7 +70,7 @@
                 "build",
                 "--no-default-features",
                 "--features",
-                "52833"
+                "52833-debug",
             ],
             "problemMatcher": [
                 "$rustc"
@@ -82,10 +82,9 @@
             "command": "cargo",
             "args": [
                 "build",
-                "--release",
                 "--no-default-features",
                 "--features",
-                "52833"
+                "52833",
             ],
             "problemMatcher": [
                 "$rustc"

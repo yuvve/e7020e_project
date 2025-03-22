@@ -1,6 +1,5 @@
 use {
     crate::{app::*, rtc::*},
-    core::fmt::Write,
     embedded_graphics::{
         mono_font::MonoTextStyle,
         pixelcolor::BinaryColor,
@@ -16,9 +15,11 @@ use {
     panic_rtt_target as _,
     profont::*,
     rtic::Mutex,
-    rtt_target::rprintln,
     ssd1306::{mode::BufferedGraphicsMode, prelude::*, I2CDisplayInterface, Ssd1306},
 };
+
+#[cfg(feature = "52833-debug")]
+use core::fmt::Write;
 
 const TIME_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_24_POINT, BinaryColor::On);
 const TEMP_DISPLAY_STYLE: MonoTextStyle<BinaryColor> = MonoTextStyle::new(&PROFONT_14_POINT, BinaryColor::On);
@@ -36,6 +37,7 @@ const ALARM_STRING: &str = "(«";
 pub type Display =
     Ssd1306<I2CInterface<Twim<TWIM0>>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
+#[derive(PartialEq)]
 pub(crate) enum Section {
     Hour,
     Minute,
@@ -53,10 +55,11 @@ pub(crate) fn init(twim0: TWIM0, twim_pins: Pins) -> Display {
     disp.init().unwrap();
     disp.clear(BinaryColor::Off).unwrap();
     disp.flush().unwrap();
+
     disp
 }
 
-// For debugging purposes
+#[allow(unused_variables)]
 pub(crate) fn update_display_rtt(
     mut cx: update_display::Context,
     ticks: u32,
@@ -66,28 +69,29 @@ pub(crate) fn update_display_rtt(
     let temperature = cx.shared.temperature.lock(|temperature| *temperature);
     let (hour, minute) = ticks_to_time(ticks as u32);
 
+    #[cfg(feature = "52833-debug")]
     if blink && !*cx.local.on {
         match section {
             Section::Hour => {
-                rprintln!("   :{:02}     {:.1} C", minute, temperature);
+                writeln!(cx.local.rtt_display, "   :{:02}     {:.1} C", minute, temperature).ok();
             }
             Section::Minute => {
-                rprintln!(" {:02}:       {:.1} C", hour, temperature);
+                writeln!(cx.local.rtt_display, " {:02}:       {:.1} C", hour, temperature).ok();
             }
             Section::Display => {
-                rprintln!("(super gentle alarm)");
+                writeln!(cx.local.rtt_display, "(super gentle alarm)").ok();
             }
             Section::AlarmIcon => {
-                rprintln!(" {:02}:{:02}     {:.1} C  {}", hour, minute, temperature, ALARM_STRING);
+                writeln!(cx.local.rtt_display, " {:02}:{:02}     {:.1} C  {}", hour, minute, temperature, ALARM_STRING).ok();
             }
         }
     } else {
-        rprintln!(
+        writeln!(cx.local.rtt_display, 
             " {:02}:{:02}     {:.1} C",
             hour,
             minute,
             temperature
-        );
+        ).ok();
     }
 
     if blink {
@@ -101,6 +105,8 @@ pub(crate) fn update_display(
     section: Section,
     blink: bool,
 ) {
+    #[cfg(feature = "52833-debug")]
+    writeln!(cx.local.rtt_display, "Updating display...").ok();
     let temperature = cx.shared.temperature.lock(|temperature| *temperature);
     let temperature_str = format_temperature(temperature);
 
@@ -110,6 +116,8 @@ pub(crate) fn update_display(
     cx.shared.display.lock(|disp| {
         disp.clear(BinaryColor::Off).unwrap();
         if blink && !*cx.local.on {
+            #[cfg(feature = "52833-debug")]
+            writeln!(cx.local.rtt_display, "Blinking...").ok();
             match section {
                 Section::Hour => {
                     draw_colon(disp);
@@ -135,6 +143,9 @@ pub(crate) fn update_display(
             draw_colon(disp);
             draw_minute(disp, &minute_str);
             draw_temperature(disp, &temperature_str);
+            if Section::AlarmIcon == section {
+                draw_alarm_icon(disp);
+            }
         }
         disp.flush().unwrap();
     });
@@ -144,23 +155,23 @@ pub(crate) fn update_display(
     }
 }
 
-pub(crate) fn clear(mut cx: clear_display::Context) {
-    cx.shared.display.lock(|display| {
-        display.clear(BinaryColor::Off).unwrap();
-        display.flush().unwrap();
-    });
-}
-
+#[allow(unused_variables)]
+#[allow(unused_mut)]
 fn format_time(hour: u8, minute: u8) -> (String<10>, String<10>) {
     let mut hour_str: String<10> = String::new();
     let mut minute_str: String<10> = String::new();
+    #[cfg(feature = "52833-debug")]
     core::write!(&mut hour_str, "{:02}", hour).unwrap();
+    #[cfg(feature = "52833-debug")]
     core::write!(&mut minute_str, "{:02}", minute).unwrap();
     (hour_str, minute_str)
 }
 
+#[allow(unused_variables)]
+#[allow(unused_mut)]
 fn format_temperature(temperature: f32) -> String<10> {
     let mut temp_str: String<10> = String::new();
+    #[cfg(feature = "52833-debug")]
     core::write!(&mut temp_str, "{:.1}°C", temperature).unwrap();
     temp_str
 }
@@ -226,4 +237,16 @@ fn draw_alarm_icon(
     Text::new(ALARM_STRING, ALARM_POSITION, TIME_DISPLAY_STYLE)
         .draw(disp)
         .unwrap();
+}
+
+pub(crate) fn disable_display(mut cx: disable_display::Context) {
+    cx.shared.display.lock(|disp| {
+        disp.set_display_on(false).ok();
+    });
+}
+
+pub(crate) fn enable_display(mut cx: enable_display::Context) {
+    cx.shared.display.lock(|disp| {
+        disp.set_display_on(true).ok();
+    });
 }
